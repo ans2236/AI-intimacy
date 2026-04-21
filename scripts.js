@@ -1,321 +1,327 @@
-/* D3-powered scrollytelling script
-   - Loads CSV from /assets/data/sample-data.csv (via PapaParse)
-   - Uses d3 to draw responsive horizontal bars and a radial gauge
-   - IntersectionObserver triggers step visuals
-*/
-(function(){
-  const DATA_PATH = '/assets/data/sample-data.csv';
-  const vizEl = d3.select('#viz');
-  const raw = document.getElementById('raw');
-  const title = document.getElementById('viz-title');
-  let currentRows = [];
-  let currentStep = 0;
-  const STEP_BAR_COLS = {
-    1: 'How often do you have personal (non-school-related) conversations with AI?',
-    3: 'How often does AI remember things from your past conversations?'
-  };
+/* ─── RANDOM NAMES ──────────────────────────────────────────── */
+const NAMES = [
+  "Mara Voss", "Eliot Crane", "Sasha Lund", "Noa Ferris",
+  "Jules Adler", "Cleo Marsh", "Theo Wain", "Iris Dove"
+];
+// Shuffle deterministically so names are stable on reload
+const shuffledNames = [...NAMES].sort((a, b) =>
+  (a.charCodeAt(0) * 7 + b.charCodeAt(1) * 3) % 11 - 5
+);
 
-  function setTitle(t){ title.textContent = t; }
-
-  function showRaw(rows){
-    raw.innerHTML = '';
-    const heading = document.createElement('div'); heading.className='raw-heading'; heading.textContent = 'Sample responses (first 10)';
-    raw.appendChild(heading);
-    rows.slice(0,10).forEach((r,i)=>{
-      const d = document.createElement('div'); d.className='raw-item';
-      d.textContent = `${i+1}. ${r['How often do you have personal (non-school-related) conversations with AI?'] || '—'} — ${r['When AI gives you advice, how does it make you feel emotionally?'] || '—'}`;
-      raw.appendChild(d);
-    });
+/* ─── DATA ──────────────────────────────────────────────────── */
+const PARTICIPANTS = [
+  {
+    id: 0,
+    interactions: ["recap of your day", "help with decision-making", "miscellaneous conversation"],
+    validate: 3, better: 5,
+    feelsDifferent: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse vel nisl ac libero facilisis imperdiet non vel velit.",
+    barriers: "Lorem ipsum dolor sit amet. Cras ultricies ligula sed magna dictum porta."
+  },
+  {
+    id: 1,
+    interactions: ["recap of your day", "help with decision-making", "advice on social situations", "advice on life problems", "venting/a listening ear"],
+    validate: 9, better: 8,
+    feelsDifferent: "Lorem ipsum dolor sit amet, adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    barriers: "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo."
+  },
+  {
+    id: 2,
+    interactions: ["help with decision-making"],
+    validate: 1, better: 1,
+    feelsDifferent: "Lorem ipsum dolor sit amet. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore.",
+    barriers: "Lorem ipsum consectetur adipiscing. Excepteur sint occaecat cupidatat non proident."
+  },
+  {
+    id: 3,
+    interactions: ["advice on social situations"],
+    validate: 8, better: 7,
+    feelsDifferent: "Lorem ipsum dolor sit amet, consectetur. Sunt in culpa qui officia deserunt mollit anim id est laborum.",
+    barriers: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nemo enim ipsam voluptatem quia voluptas sit aspernatur."
+  },
+  {
+    id: 4,
+    interactions: ["help with decision-making", "advice on social situations", "advice on life problems", "venting/a listening ear"],
+    validate: 9, better: 9,
+    feelsDifferent: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Neque porro quisquam est qui dolorem ipsum.",
+    barriers: "Lorem ipsum dolor sit amet. Ut labore et dolore magnam aliquam quaerat voluptatem."
+  },
+  {
+    id: 5,
+    interactions: ["advice on life problems"],
+    validate: 8, better: 7,
+    feelsDifferent: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quis autem vel eum iure reprehenderit qui in ea.",
+    barriers: "Lorem ipsum dolor sit amet. At vero eos et accusamus et iusto odio dignissimos ducimus."
+  },
+  {
+    id: 6,
+    interactions: ["help with decision-making", "miscellaneous conversation"],
+    validate: 3, better: 8,
+    feelsDifferent: "Lorem ipsum dolor sit amet, consectetur. Nam libero tempore cum soluta nobis eligendi optio cumque.",
+    barriers: "Lorem ipsum dolor sit amet, adipiscing elit. Temporibus autem quibusdam aut officiis debitis rerum."
   }
+];
 
-  function countBy(rows, col){
-    const counts = {};
-    rows.forEach(r=>{
-      const v = (r[col]||'').trim();
-      if(!v) return;
-      counts[v] = (counts[v]||0)+1;
-    });
-    return counts;
+/* ─── ICONS — expressive, narrative SVG figures ─────────────── */
+// All drawn on a 80×80 viewBox so figures feel substantial
+const ICONS = {
+
+  "recap of your day": {
+    label: "Day Recap",
+    // Person sitting, head tilted back slightly, reflecting — journal open on lap
+    svg: `
+      <svg viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" xmlns="http://www.w3.org/2000/svg">
+        <!-- journal / book open on lap -->
+        <path d="M22 55 Q40 50 58 55 L56 68 Q40 64 24 68 Z"/>
+        <line x1="40" y1="50" x2="40" y2="68"/>
+        <!-- sitting figure body -->
+        <line x1="40" y1="38" x2="40" y2="52"/>
+        <!-- legs bent, sitting -->
+        <path d="M40 52 Q34 57 22 57"/>
+        <path d="M40 52 Q46 57 58 57"/>
+        <!-- arms resting on book -->
+        <path d="M40 42 Q32 47 26 54"/>
+        <path d="M40 42 Q48 47 54 54"/>
+        <!-- head -->
+        <circle cx="40" cy="31" r="7"/>
+        <!-- slight chin-down, thoughtful tilt -->
+        <path d="M37 35 Q40 37 43 35"/>
+      </svg>`
+  },
+
+  "help with decision-making": {
+    label: "Decision",
+    // Figure at a crossroads: two paths branch from feet, hands out weighing options
+    svg: `
+      <svg viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" xmlns="http://www.w3.org/2000/svg">
+        <!-- branching paths -->
+        <path d="M40 68 L40 52"/>
+        <path d="M40 52 Q28 46 16 38"/>
+        <path d="M40 52 Q52 46 64 38"/>
+        <!-- body -->
+        <line x1="40" y1="38" x2="40" y2="52"/>
+        <!-- left arm out, palm up — weighing -->
+        <path d="M40 42 L24 36"/>
+        <path d="M22 34 L26 38 L28 33"/>
+        <!-- right arm out, palm up -->
+        <path d="M40 42 L56 36"/>
+        <path d="M58 34 L54 38 L52 33"/>
+        <!-- head, slightly tilted as if uncertain -->
+        <circle cx="40" cy="31" r="7"/>
+        <path d="M37 29 Q40 28 43 29"/>
+        <!-- question mark above -->
+        <path d="M40 20 Q44 16 44 13 Q44 10 40 10 Q36 10 36 13"/>
+        <circle cx="40" cy="22" r="1" fill="currentColor" stroke="none"/>
+      </svg>`
+  },
+
+  "miscellaneous conversation": {
+    label: "Conversation",
+    // Two speech bubbles above a solitary figure looking up at a glowing screen/orb
+    svg: `
+      <svg viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" xmlns="http://www.w3.org/2000/svg">
+        <!-- glowing orb / screen -->
+        <circle cx="40" cy="16" r="10"/>
+        <circle cx="40" cy="16" r="6" stroke-opacity="0.35"/>
+        <!-- light rays -->
+        <line x1="40" y1="4"  x2="40" y2="1"/>
+        <line x1="50" y1="7"  x2="52" y2="5"/>
+        <line x1="30" y1="7"  x2="28" y2="5"/>
+        <!-- figure looking up -->
+        <circle cx="40" cy="44" r="7"/>
+        <path d="M37 41 Q40 39 43 41"/>
+        <!-- body -->
+        <line x1="40" y1="51" x2="40" y2="65"/>
+        <!-- arms raised slightly toward screen -->
+        <path d="M40 54 Q32 50 28 44"/>
+        <path d="M40 54 Q48 50 52 44"/>
+        <!-- legs -->
+        <path d="M40 65 Q36 70 32 74"/>
+        <path d="M40 65 Q44 70 48 74"/>
+      </svg>`
+  },
+
+  "advice on social situations": {
+    label: "Social Advice",
+    // Three figures — two facing each other in tension, one smaller figure off to the side watching
+    svg: `
+      <svg viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" xmlns="http://www.w3.org/2000/svg">
+        <!-- left figure -->
+        <circle cx="20" cy="28" r="6"/>
+        <line x1="20" y1="34" x2="20" y2="52"/>
+        <path d="M20 38 L12 44"/>
+        <path d="M20 38 L28 42"/>
+        <path d="M20 52 L16 62"/>
+        <path d="M20 52 L24 62"/>
+        <!-- right figure mirrored -->
+        <circle cx="56" cy="28" r="6"/>
+        <line x1="56" y1="34" x2="56" y2="52"/>
+        <path d="M56 38 L64 44"/>
+        <path d="M56 38 L48 42"/>
+        <path d="M56 52 L52 62"/>
+        <path d="M56 52 L60 62"/>
+        <!-- tension line between them -->
+        <path d="M26 36 Q38 30 50 36" stroke-dasharray="3 3"/>
+        <!-- small observer figure (the participant, apart) -->
+        <circle cx="40" cy="60" r="4.5"/>
+        <line x1="40" y1="64.5" x2="40" y2="74"/>
+        <path d="M40 67 L36 71"/>
+        <path d="M40 67 L44 71"/>
+      </svg>`
+  },
+
+  "advice on life problems": {
+    label: "Life Problems",
+    // Figure slumped under a heavy weight/boulder they're barely holding up
+    svg: `
+      <svg viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" xmlns="http://www.w3.org/2000/svg">
+        <!-- heavy boulder / weight -->
+        <ellipse cx="40" cy="24" rx="18" ry="13"/>
+        <!-- pressure cracks in boulder -->
+        <path d="M33 18 L36 24 L32 28" stroke-opacity="0.5"/>
+        <path d="M46 20 L43 25 L47 29" stroke-opacity="0.5"/>
+        <!-- figure straining beneath, knees bent -->
+        <circle cx="40" cy="45" r="6"/>
+        <!-- arms pushed up supporting weight -->
+        <path d="M40 40 L28 34"/>
+        <path d="M40 40 L52 34"/>
+        <!-- body compressed, bent knees -->
+        <path d="M40 51 L40 58"/>
+        <path d="M40 58 Q34 63 28 68"/>
+        <path d="M40 58 Q46 63 52 68"/>
+      </svg>`
+  },
+
+  "venting/a listening ear": {
+    label: "Venting",
+    // Distressed figure, arms flung wide, head thrown back or forward, jagged emotion lines radiating out
+    svg: `
+      <svg viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" xmlns="http://www.w3.org/2000/svg">
+        <!-- emotion burst lines radiating out -->
+        <line x1="40" y1="12" x2="40" y2="5"  stroke-opacity="0.5"/>
+        <line x1="56" y1="17" x2="62" y2="11" stroke-opacity="0.5"/>
+        <line x1="63" y1="33" x2="70" y2="30" stroke-opacity="0.5"/>
+        <line x1="24" y1="17" x2="18" y2="11" stroke-opacity="0.5"/>
+        <line x1="17" y1="33" x2="10" y2="30" stroke-opacity="0.5"/>
+        <!-- head thrown back / up in anguish -->
+        <circle cx="40" cy="24" r="7"/>
+        <!-- open mouth, distressed -->
+        <path d="M37 27 Q40 31 43 27"/>
+        <!-- body -->
+        <line x1="40" y1="31" x2="40" y2="50"/>
+        <!-- arms flung wide and up — distressed posture -->
+        <path d="M40 36 Q28 28 18 30"/>
+        <path d="M40 36 Q52 28 62 30"/>
+        <!-- hands splayed open -->
+        <path d="M18 30 L15 27 M18 30 L14 31 M18 30 L15 33"/>
+        <path d="M62 30 L65 27 M62 30 L66 31 M62 30 L65 33"/>
+        <!-- legs slightly apart, unstable stance -->
+        <path d="M40 50 Q34 58 28 66"/>
+        <path d="M40 50 Q46 58 52 66"/>
+      </svg>`
   }
+};
 
-  function drawBarD3(counts, colName){
-    vizEl.html('');
-    const entries = Object.entries(counts).sort((a,b)=>b[1]-a[1]);
-    const w = Math.max(480, document.getElementById('viz').clientWidth || 700);
-    const h = Math.max(160, entries.length * 44);
-    const margin = {top:14,right:24,bottom:20,left:180};
-    const width = w - margin.left - margin.right;
-    const height = h - margin.top - margin.bottom;
+/* ─── DOM BUILDERS ──────────────────────────────────────────── */
+function buildIconItem(type) {
+  const def = ICONS[type];
+  if (!def) return '';
+  return `
+    <div class="icon-item">
+      <div class="icon-svg-wrap">
+        ${def.svg}
+      </div>
+      <span class="icon-label">${def.label}</span>
+    </div>`;
+}
 
-    const svg = vizEl.append('svg').attr('width',w).attr('height',h);
-    const g = svg.append('g').attr('transform',`translate(${margin.left},${margin.top})`);
+function buildScoreBar(label, value) {
+  const pct = (value / 10) * 100;
+  return `
+    <div class="score-pill">
+      <span class="score-label">${label}</span>
+      <div class="score-bar-wrap">
+        <div class="score-bar" style="width:${pct}%"></div>
+      </div>
+      <span class="score-num">${value}<span>/10</span></span>
+    </div>`;
+}
 
-    const x = d3.scaleLinear().domain([0, d3.max(entries, d=>d[1])||1]).range([0,width]);
-    const y = d3.scaleBand().domain(entries.map(d=>d[0])).range([0,height]).padding(0.2);
+function buildTooltip(p) {
+  return `
+    <div class="cluster-tooltip">
+      <div class="tooltip-scores">
+        ${buildScoreBar("Validates feelings", p.validate)}
+        ${buildScoreBar("Makes feel better", p.better)}
+      </div>
+      <div class="tooltip-divider"></div>
+      <div class="tooltip-field">
+        <div class="tooltip-field-label">What feels different with AI?</div>
+        <div class="tooltip-field-text">"${p.feelsDifferent}"</div>
+      </div>
+      <div class="tooltip-field">
+        <div class="tooltip-field-label">Barriers AI doesn't have</div>
+        <div class="tooltip-field-text">"${p.barriers}"</div>
+      </div>
+    </div>`;
+}
 
-    const bars = g.selectAll('rect').data(entries, d=>d[0]);
-    bars.join(
-      enter => enter.append('rect')
-        .attr('x',0).attr('y',d=>y(d[0]))
-        .attr('height', y.bandwidth())
-        .attr('width',0)
-        .attr('fill','rgba(11,59,59,0.16)')
-        .on('mouseover', (event,d)=>handleBarOver(event,d,colName))
-        .on('mousemove', handleBarMove)
-        .on('mouseout', handleBarOut)
-        .call(enter => enter.transition().duration(800).ease(d3.easeCubic).attr('width',d=>x(d[1]))),
-      update => update.call(u => u.transition().duration(700).ease(d3.easeCubic).attr('y',d=>y(d[0])).attr('width',d=>x(d[1])).attr('height', y.bandwidth())),
-      exit => exit.call(e => e.transition().duration(400).attr('width',0).remove())
-    );
+function buildCluster(p, index) {
+  const name = shuffledNames[index % shuffledNames.length];
+  const icons = p.interactions.map(buildIconItem).join('');
+  const tooltip = buildTooltip(p);
+  return `
+    <div class="cluster-row" data-index="${index}">
+      <span class="participant-label">${name}</span>
+      <div class="icon-cluster" role="button" aria-label="Hover to learn about ${name}">
+        ${icons}
+        ${tooltip}
+      </div>
+    </div>`;
+}
 
-    const labels = g.selectAll('.label').data(entries, d=>d[0]);
-    labels.join(
-      enter => enter.append('text').attr('class','label').attr('x',-12).attr('y',d=>y(d[0]) + y.bandwidth()/2 + 5).attr('text-anchor','end').attr('fill','#0b3b3b').style('font-size','13px').style('opacity',0).text(d=>d[0]).call(e=>e.transition().duration(600).style('opacity',1)),
-      update => update.call(u=>u.transition().duration(600).attr('y',d=>y(d[0]) + y.bandwidth()/2 + 5)),
-      exit => exit.remove()
-    );
+function buildLegend() {
+  return Object.entries(ICONS).map(([, def]) => `
+    <div class="legend-item">
+      <div class="legend-icon" style="color:var(--ice-3);">${def.svg}</div>
+      <span>${def.label}</span>
+    </div>`).join('');
+}
 
-    const vals = g.selectAll('.value').data(entries, d=>d[0]);
-    vals.join(
-      enter => enter.append('text').attr('class','value').attr('x',d=>6).attr('y',d=>y(d[0]) + y.bandwidth()/2 + 5).attr('fill','#0b3b3b').style('font-size','12px').style('opacity',0).text(d=>d[1]).call(e=>e.transition().duration(700).attr('x',d=>x(d[1]) + 6).style('opacity',1)),
-      update => update.call(u=>u.transition().duration(700).attr('x',d=>x(d[1]) + 6).attr('y',d=>y(d[0]) + y.bandwidth()/2 + 5).text(d=>d[1])),
-      exit => exit.remove()
-    );
+/* ─── INIT ──────────────────────────────────────────────────── */
+document.addEventListener('DOMContentLoaded', () => {
+  // Legend
+  document.getElementById('legend-container').innerHTML = buildLegend();
 
-    // create tooltip element if missing
-    ensureTooltip();
-
-    // add staggered pop animation on enter
-    g.selectAll('rect').each(function(d,i){
-      d3.select(this).style('transform-origin','left center');
-      d3.select(this).transition().delay(i*80).duration(700).ease(d3.easeBackOut).styleTween('transform', function(){
-        return t => `translateY(${(1-t)*6}px) scaleY(${0.96 + 0.04*t})`;
-      });
-    });
-  }
-
-  function drawGaugeD3(avg, count){
-    vizEl.html('');
-    const w = Math.min(600, document.getElementById('viz').clientWidth || 600);
-    const h = 260;
-    const svg = vizEl.append('svg').attr('width',w).attr('height',h);
-    const cx = w/2; const cy = h/2 + 10; const radius = Math.min(w, h) * 0.32;
-
-    const arc = d3.arc().innerRadius(radius*0.6).outerRadius(radius).startAngle(-Math.PI/2);
-    // background arc (full range 0..1 mapped to -90..90)
-    svg.append('g').attr('transform',`translate(${cx},${cy})`)
-      .append('path')
-      .attr('d', arc.endAngle(Math.PI/2))
-      .attr('fill','rgba(11,59,59,0.06)');
-
-    const scale = d3.scaleLinear().domain([1,5]).range([-Math.PI/2, Math.PI/2]);
-    const fg = svg.append('g').attr('transform',`translate(${cx},${cy})`)
-      .append('path')
-      .attr('fill','rgba(11,59,59,0.18)');
-
-    fg.transition().duration(900).ease(d3.easeCubic).attrTween('d', function(){
-      const i = d3.interpolate(-Math.PI/2, scale(avg||1));
-      return t => arc.endAngle(i(t))();
-    });
-
-    // center text
-    const center = svg.append('text').attr('x',cx).attr('y',cy+8).attr('text-anchor','middle').style('font-size','44px').style('font-family','Cinzel,serif').text(avg?avg.toFixed(2):'—');
-    svg.append('text').attr('x',cx).attr('y',cy+42).attr('text-anchor','middle').style('font-size','12px').style('fill','rgba(0,0,0,0.55)').text(`Average (1-5) — ${count} responses`);
-    // pulse the center number
-    center.classed('gauge-pulse', true);
-  }
-
-  function showStep(i, rows){
-    switch(i){
-      case 0:
-        setTitle('Raw responses');
-        showRaw(rows);
-        vizEl.html('<div class="placeholder">Scroll to reveal visuals</div>');
-        // animate raw list items
-        requestAnimationFrame(()=>{
-          document.querySelectorAll('.raw-item').forEach((el,idx)=>{
-            el.classList.remove('fade-in');
-            el.style.animationDelay = (idx*60)+'ms';
-            el.classList.add('fade-in');
-          });
-        });
-        break;
-      case 1:
-        setTitle('How often students talk to AI');
-        const counts = countBy(rows, STEP_BAR_COLS[1]);
-        drawBarD3(counts, STEP_BAR_COLS[1]);
-        // highlight strongest bar after draw
-        setTimeout(()=>{
-          const bars = d3.selectAll('#viz svg rect');
-          bars.classed('bar-glow', false);
-          bars.filter((d,i)=>i===0).classed('bar-glow', true);
-        }, 900);
-        break;
-      case 2:
-        setTitle('Emotional response to AI advice');
-        // parse numeric emotional responses if available
-        const nums = rows.map(r=>{const v=parseFloat(r['When AI gives you advice, how does it make you feel emotionally?']); return isNaN(v)?null:v}).filter(Boolean);
-        const avg = nums.length ? (nums.reduce((a,b)=>a+b,0)/nums.length) : 0;
-        drawGaugeD3(avg, nums.length);
-        break;
-      case 3:
-        setTitle('Memory & style alignment');
-        const mem = countBy(rows, STEP_BAR_COLS[3]);
-        drawBarD3(mem, STEP_BAR_COLS[3]);
-        // give a warm gold tint briefly
-        setTimeout(()=>{
-          d3.selectAll('#viz svg rect').transition().duration(400).style('fill','rgba(232,198,106,0.22)').transition().duration(800).style('fill','rgba(11,59,59,0.16)');
-        }, 700);
-        break;
-      default:
-        setTitle('Exploration'); vizEl.html('');
+  // Stage
+  const stage = document.getElementById('stage');
+  PARTICIPANTS.forEach((p, i) => {
+    if (i > 0 && i % 3 === 0) {
+      stage.insertAdjacentHTML('beforeend',
+        `<div class="chapter-divider"><span>· · ·</span></div>`);
     }
-  }
-
-  function wireSteps(rows){
-    const steps = Array.from(document.querySelectorAll('.step'));
-    const options = {root:null,rootMargin:'0px',threshold:0.6};
-    const obs = new IntersectionObserver((entries)=>{
-      entries.forEach(en=>{
-        if(en.isIntersecting){
-          steps.forEach(s=>s.classList.remove('is-active'));
-          en.target.classList.add('is-active');
-          // animated entrance for this step
-          en.target.classList.add('entered');
-          setTimeout(()=>en.target.classList.remove('entered'), 1200);
-          const i = parseInt(en.target.dataset.step,10);
-          currentStep = i;
-          currentRows = rows;
-          showStep(i, rows);
-        }
-      });
-    },options);
-    steps.forEach(s=>obs.observe(s));
-  }
-
-  // enhanced tooltip: show sample responses for the hovered category
-  function handleBarOver(event,d,col){
-    const tip = document.getElementById('chart-tooltip'); if(!tip) return;
-    // gather sample rows matching this category
-    const label = d[0];
-    const samples = (currentRows||[]).filter(r=> ((r[col]||'').trim() === label)).slice(0,3);
-    let html = `<strong>${label}</strong><div style="color:rgba(0,0,0,0.6);margin-top:6px">${d[1]} responses</div>`;
-    if(samples.length){
-      html += '<hr style="border:none;border-top:1px solid rgba(0,0,0,0.06);margin:8px 0">';
-      samples.forEach(s=>{
-        const emo = s['When AI gives you advice, how does it make you feel emotionally?'] || '';
-        const open = s['What makes it easier to open up to AI than to a person?'] || s['What feels different about talking to AI compared to talking to a friend or therapist?'] || '';
-        html += `<div style="font-size:12px;margin-bottom:6px"><em>${emo}</em><div style="color:rgba(0,0,0,0.55);margin-top:4px">${open}</div></div>`;
-      });
-    }
-    tip.innerHTML = html;
-    tip.classList.add('visible');
-  }
-
-  function handleBarMove(event){
-    const tip = document.getElementById('chart-tooltip'); if(!tip) return;
-    const x = event.pageX; const y = event.pageY;
-    tip.style.left = x + 'px'; tip.style.top = y + 'px';
-  }
-
-  function handleBarOut(){
-    const tip = document.getElementById('chart-tooltip'); if(!tip) return; tip.classList.remove('visible');
-  }
-
-  // Tooltip helpers
-  function ensureTooltip(){
-    if(document.querySelector('.tooltip')) return;
-    const t = document.createElement('div'); t.className='tooltip'; t.id='chart-tooltip'; document.body.appendChild(t);
-  }
-  function handleBarOver(event,d){
-    const tip = document.getElementById('chart-tooltip'); if(!tip) return;
-    tip.innerHTML = `<strong>${d[0]}</strong><div style="color:rgba(0,0,0,0.6)">${d[1]} responses</div>`;
-    tip.classList.add('visible');
-  }
-  function handleBarMove(event){
-    const tip = document.getElementById('chart-tooltip'); if(!tip) return;
-    tip.style.left = (event.pageX) + 'px'; tip.style.top = (event.pageY) + 'px';
-  }
-  function handleBarOut(){
-    const tip = document.getElementById('chart-tooltip'); if(!tip) return; tip.classList.remove('visible');
-  }
-
-  // redraw current visualization on resize
-  let resizeTimeout = null;
-  window.addEventListener('resize', ()=>{
-    clearTimeout(resizeTimeout);
-    resizeTimeout = setTimeout(()=>{
-      if(!currentRows) return;
-      showStep(currentStep, currentRows);
-    }, 160);
+    stage.insertAdjacentHTML('beforeend', buildCluster(p, i));
   });
 
-  function boot(){
-    if(!window.Papa || !window.d3){
-      d3.select('#viz').html('<div class="placeholder">Error: required libraries not found</div>');
-      return;
-    }
-    Papa.parse(DATA_PATH,{
-      download:true,header:true,skipEmptyLines:true,complete:function(results){
-        const rows = results.data || [];
-        setTitle('Dataset loaded');
-        showRaw(rows);
-        wireSteps(rows);
-        // wire download button
-        const btn = document.getElementById('download-btn');
-        if(btn){
-          btn.addEventListener('click', ()=>{
-            downloadCurrentChart();
-          });
-        }
-      },error:function(err){
-        d3.select('#viz').html('<div class="placeholder">Could not load data</div>');
+  // Mobile tap to toggle tooltip
+  document.querySelectorAll('.icon-cluster').forEach(cluster => {
+    cluster.addEventListener('click', () => {
+      if (window.innerWidth < 900) {
+        const isOpen = cluster.classList.contains('tooltip-visible');
+        document.querySelectorAll('.icon-cluster').forEach(c => c.classList.remove('tooltip-visible'));
+        if (!isOpen) cluster.classList.add('tooltip-visible');
       }
     });
-  }
+  });
 
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot); else boot();
-  
-  // download helper: serialize first SVG inside #viz and convert to PNG
-  function downloadCurrentChart(){
-    const container = document.getElementById('viz');
-    const svg = container.querySelector('svg');
-    if(!svg){
-      alert('No chart available to download');
-      return;
-    }
-    // get width/height
-    const width = parseInt(svg.getAttribute('width')) || svg.clientWidth || 800;
-    const height = parseInt(svg.getAttribute('height')) || svg.clientHeight || 400;
-    // serialize SVG
-    let serializer = new XMLSerializer();
-    let source = serializer.serializeToString(svg);
-    // add name spaces if missing
-    if(!source.match(/^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/)){
-      source = source.replace(/^<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');
-    }
-    if(!source.match(/^<svg[^>]+xmlns:xlink="http\:\/\/www\.w3\.org\/1999\/xlink"/)){
-      source = source.replace(/^<svg/, '<svg xmlns:xlink="http://www.w3.org/1999/xlink"');
-    }
-    // add XML declaration
-    source = '<?xml version="1.0" standalone="no"?>\n' + source;
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
 
-    const svgUrl = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(source);
-    const img = new Image();
-    img.onload = function(){
-      const canvas = document.createElement('canvas');
-      canvas.width = width; canvas.height = height;
-      const ctx = canvas.getContext('2d');
-      // white background
-      ctx.fillStyle = '#ffffff'; ctx.fillRect(0,0,canvas.width,canvas.height);
-      ctx.drawImage(img,0,0,width,height);
-      canvas.toBlob(function(blob){
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a'); a.href = url; a.download = 'chart.png'; document.body.appendChild(a); a.click(); a.remove();
-        URL.revokeObjectURL(url);
-      }, 'image/png');
-    };
-    img.onerror = function(){ alert('Failed to render chart for download'); };
-    img.src = svgUrl;
-  }
-})();
+  document.querySelectorAll('.cluster-row').forEach(row => observer.observe(row));
+});
