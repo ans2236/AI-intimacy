@@ -1,0 +1,93 @@
+:root{
+  --bg:#f7f3ef;
+  --cream:#f3eadf;
+  --rich:#061e1e;
+  --gold:#e8c66a;
+  --accent:#7da7a7;
+  --muted:#6b6b6b;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;font-family:Montserrat, sans-serif;background:linear-gradient(180deg,var(--bg),#efe9e0);
+  color:var(--rich);-webkit-font-smoothing:antialiased;
+}
+.mast{background:linear-gradient(90deg,rgba(6,30,30,0.95),rgba(6,30,30,0.88));color:var(--cream);padding:26px 36px}
+.mast-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:18px}
+.logo{font-family:Cinzel,serif;margin:0;font-size:34px;letter-spacing:6px;text-transform:uppercase}
+.tag{margin:0;opacity:0.95;font-size:14px;letter-spacing:1px}
+
+.scrolly{display:flex;max-width:1100px;margin:44px auto;gap:32px;padding:0 20px}
+.scroller{width:340px;position:sticky;top:34px;height:70vh}
+.steps{background:linear-gradient(180deg,rgba(255,255,255,0.65),rgba(248,241,230,0.45));padding:22px;border-radius:14px;border:3px solid rgba(232,198,106,0.16);box-shadow:0 14px 30px rgba(6,30,30,0.05)}
+.step{padding:16px;border-left:4px solid transparent;margin-bottom:14px;transition:all .48s cubic-bezier(.2,.9,.2,1);display:flex;gap:14px;align-items:flex-start;opacity:0;transform:translateY(18px)}
+.step-num{background:linear-gradient(180deg,var(--gold),#f3e0a2);color:var(--rich);padding:10px 12px;border-radius:8px;font-weight:700;font-family:Cinzel,serif;box-shadow:0 6px 14px rgba(232,198,106,0.12)}
+.step h3{margin:0;font-size:17px;font-family:Cinzel,serif;letter-spacing:1px}
+.step p{margin:6px 0 0 0;color:var(--muted);font-size:13px;line-height:1.3}
+.step.is-active{background:linear-gradient(90deg,rgba(232,198,106,0.06),rgba(250,246,240,0.02));border-left-color:var(--gold);transform:translateX(6px)}
+/* animated entrance for steps */
+.step.entered{opacity:1;transform:none}
+
+.graphic{flex:1;min-height:70vh;background:linear-gradient(180deg,rgba(255,255,255,0.5),rgba(250,246,240,0.6));padding:28px;border-radius:14px;border:2px solid rgba(11,59,59,0.06)}
+.viz-header{display:flex;align-items:center;justify-content:space-between;gap:18px}
+.viz-header h2{margin:0;font-family:Cinzel,serif;color:var(--rich);font-size:22px;letter-spacing:2px}
+
+/* download button */
+.download-btn{background:var(--gold);border:0;padding:8px 12px;border-radius:8px;color:var(--rich);font-weight:600;cursor:pointer;box-shadow:0 8px 18px rgba(232,198,106,0.12);transition:transform .12s ease,box-shadow .12s ease}
+.download-btn:hover{transform:translateY(-2px);box-shadow:0 12px 26px rgba(232,198,106,0.16)}
+.download-btn:active{transform:translateY(0)}
+.download-btn[disabled]{opacity:0.5;cursor:not-allowed}
+.decor{width:120px;height:36px;background:linear-gradient(90deg,var(--gold),#f0dca0);border-radius:6px;box-shadow:0 6px 14px rgba(214,183,106,0.12)}
+
+.viz{margin-top:18px;min-height:320px;display:flex;align-items:center;justify-content:center;position:relative}
+.viz svg{width:100%;height:320px}
+.placeholder{color:var(--muted);font-size:18px}
+
+/* small fade for viz area */
+.viz.fade-in{animation:vizFade .7s ease both}
+@keyframes vizFade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+.raw-list{margin-top:22px;padding:18px;background:rgba(6,30,30,0.03);border-radius:10px;border:1px dashed rgba(6,30,30,0.03);max-height:260px;overflow:auto}
+.raw-item{padding:10px;border-bottom:1px solid rgba(6,30,30,0.03);font-size:13px}
+.raw-heading{font-weight:600;margin-bottom:8px;color:var(--rich)}
+.raw-item:last-child{border-bottom:0}
+
+.foot{text-align:center;color:var(--muted);padding:26px 0;font-size:13px}
+
+/* small responsive */
+@media (max-width:900px){
+  .scrolly{flex-direction:column;padding:0 14px}
+  .scroller{position:relative;width:100%;height:auto}
+}
+
+/* playful art-deco accents */
+.graphic:before{content:"";position:absolute;right:18px;top:18px;width:48px;height:48px;border-radius:8px;background:linear-gradient(180deg,var(--gold),#f0dca0);opacity:0.12}
+
+/* Tooltip */
+.tooltip{
+  position:fixed;pointer-events:none;background:linear-gradient(180deg,white,#f7f3ef);border:1px solid rgba(11,59,59,0.06);padding:8px 10px;border-radius:6px;box-shadow:0 6px 18px rgba(11,59,59,0.08);font-size:13px;color:var(--rich);z-index:9999;transform:translate(-50%,-140%);transition:opacity .18s ease,transform .18s ease;opacity:0}
+.tooltip.visible{opacity:1;transform:translate(-50%,-180%)}
+
+/* svg text clarity */
+svg text{font-family:Montserrat, sans-serif}
+
+/* micro-animation helpers */
+.bar-glow{filter:drop-shadow(0 6px 14px rgba(232,198,106,0.18));transition:filter .28s ease}
+
+@keyframes barPop{
+  0%{transform:translateY(6px) scaleY(0.96);opacity:0}
+  60%{transform:translateY(-2px) scaleY(1.02);opacity:1}
+ 100%{transform:none;opacity:1}
+}
+
+.raw-item{opacity:1}
+.raw-item.fade-in{opacity:0;transform:translateY(8px);animation:rawFade .6s forwards}
+@keyframes rawFade{to{opacity:1;transform:none}}
+
+.gauge-pulse{animation:gaugePulse .9s ease both}
+@keyframes gaugePulse{0%{transform:scale(0.98);opacity:0.9}50%{transform:scale(1.06)}100%{transform:scale(1);opacity:1}}
+
+
+/* bar hover */
+rect:hover{filter:brightness(1.05);cursor:pointer}
+
