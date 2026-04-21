@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Scrollytelling — AI Responses</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@300;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="mast">
+    <div class="mast-inner">
+      <h1 class="logo">ART•DECO AI</h1>
+      <p class="tag">lorem ipsum dolor sit amet — placeholder</p>
+    </div>
+  </header>
+
+  <main class="scrolly">
+    <aside class="scroller">
+      <div class="steps">
+        <div class="step" data-step="0">
+          <div class="step-num">01</div>
+          <h3>Raw Responses</h3>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+        </div>
+        <div class="step" data-step="1">
+          <div class="step-num">02</div>
+          <h3>Frequency</h3>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+        </div>
+        <div class="step" data-step="2">
+          <div class="step-num">03</div>
+          <h3>Emotional Tone</h3>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+        </div>
+        <div class="step" data-step="3">
+          <div class="step-num">04</div>
+          <h3>Memory & Style</h3>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+        </div>
+      </div>
+    </aside>
+
+    <section class="graphic" id="graphic">
+      <div class="viz-header">
+        <h2 id="viz-title">Loading data…</h2>
+        <div style="display:flex;align-items:center;gap:12px">
+          <button id="download-btn" class="download-btn" title="Download current chart as PNG">Download PNG</button>
+          <div class="decor" aria-hidden="true"></div>
+        </div>
+      </div>
+
+      <div id="viz" class="viz"> 
+        <div class="placeholder">Please wait — fetching dataset</div>
+      </div>
+
+      <div id="raw" class="raw-list" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <footer class="foot"> 
+    <p>lorem ipsum • placeholder</p>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="scripts.js"></script>
+</body>
+</html>
