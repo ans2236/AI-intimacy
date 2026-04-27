@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Talking to the Machine — AI Interactions Among College Students</title>
   <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 </head>
 <body>
 
@@ -19,6 +21,198 @@
       Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
       nisi ut aliquip ex ea commodo consequat.
     </p>
+    <!-- ── SURVEY VISUALIZATION ──────────────────────────────── -->
+    <div class="survey-viz">
+      <header>
+        <p class="eyebrow">Survey Results · n=14</p>
+        <h1>AI &amp; Emotional Support</h1>
+        <p class="subtitle">How young people use AI for personal, non-academic conversations</p>
+      </header>
+
+      <div class="sv-body">
+
+        <section class="section">
+          <div class="cards">
+            <div class="card"><div class="card-label">Total respondents</div><div class="card-value">14</div></div>
+            <div class="card"><div class="card-label">Use AI daily or more</div><div class="card-value">3</div></div>
+            <div class="card"><div class="card-label">Rarely / never use AI</div><div class="card-value">5</div></div>
+            <div class="card"><div class="card-label">Open to interview</div><div class="card-value">5</div></div>
+          </div>
+        </section>
+
+        <hr class="sv-divider" />
+
+        <section class="section">
+          <h2 class="sec-title">How often do individuals use AI for non-academic matters?</h2>
+          <div class="sv-legend">
+            <span class="sv-legend-item"><span class="dot" style="background:#7F77DD;"></span>Daily or more (3)</span>
+            <span class="sv-legend-item"><span class="dot" style="background:#5DCAA5;"></span>Multiple times/week (1)</span>
+            <span class="sv-legend-item"><span class="dot" style="background:#EF9F27;"></span>Once/week (1)</span>
+            <span class="sv-legend-item"><span class="dot" style="background:#378ADD;"></span>A few times/month (4)</span>
+            <span class="sv-legend-item"><span class="dot" style="background:#D4537E;"></span>Rarely / never (5)</span>
+          </div>
+          <div class="chart-wrap" style="height:260px;">
+            <canvas id="freqChart"></canvas>
+          </div>
+        </section>
+
+        <hr class="sv-divider" />
+
+        <section class="section">
+          <h2 class="sec-title">Types of interactions <span class="n-label">(all that apply, n=14)</span></h2>
+          <div class="chart-wrap" style="height:280px;">
+            <canvas id="typeChart"></canvas>
+          </div>
+        </section>
+
+        <hr class="sv-divider" />
+
+        <section class="section">
+          <h2 class="sec-title">Average Scale Scores</h2>
+          <div id="scaleRows"></div>
+        </section>
+
+        <hr class="sv-divider" />
+
+        <section class="section">
+          <h2 class="sec-title">What feels different about talking to AI?</h2>
+          <div class="quotes-grid">
+            <blockquote>"More convenient and readily available — I don't need to organize myself before expressing."</blockquote>
+            <blockquote>"I can stop whenever I feel like it."</blockquote>
+            <blockquote>"The real connection you miss out on."</blockquote>
+            <blockquote>"I can explain the whole situation with all the minute details in a way I can't in person due to time constraints. AI has allegiance to no one but the database it serves."</blockquote>
+            <blockquote>"Quicker, I feel it's more 'objective' and less subject to bias."</blockquote>
+            <blockquote>"AI feels more encouraging, sometimes excessively. It also offers multiple different solutions or ideas in a list, which can be helpful or sometimes overwhelming."</blockquote>
+            <blockquote>"It won't judge and it's free."</blockquote>
+            <blockquote>"You're not burdening the AI like you would a friend or therapist, and you're not bringing it down emotionally because it doesn't have emotions."</blockquote>
+            <blockquote>"Use it rarely and only for hyper specific scenarios where I want advice and feel awkward talking to friends. AI is nonjudgmental and quite helpful."</blockquote>
+            <blockquote>"I feel free to say anything to AI since I feel private. The conversation can start whenever."</blockquote>
+          </div>
+        </section>
+
+        <hr class="sv-divider" />
+
+        <section class="section">
+          <h2 class="sec-title">What makes it easier to open up to AI?</h2>
+          <div class="quotes-grid">
+            <blockquote>"We don't have enough time to talk."</blockquote>
+            <blockquote>"Friends are more emotional."</blockquote>
+            <blockquote>"Miscommunication and tone."</blockquote>
+            <blockquote>"My friends are friends with people who I vent to AI about and also are liable to judge me."</blockquote>
+            <blockquote>"Friends are not as available, sometimes friends are part of the issue or related to the person."</blockquote>
+            <blockquote>"I'm less embarrassed to admit things to AI because it's not a person. It's also helpful in social situations where I want a completely objective viewpoint."</blockquote>
+            <blockquote>"Always available."</blockquote>
+            <blockquote>"They aren't burdened by your words nor worried for you based on what you say."</blockquote>
+            <blockquote>"I know it doesn't care or have actual emotional reactions because it's literally a bot. If I open up it doesn't feel like anyone is actually learning about me."</blockquote>
+            <blockquote>"The private setting and the conversation can start whenever."</blockquote>
+          </div>
+        </section>
+
+        <hr class="sv-divider" />
+
+        <section class="section">
+          <h2 class="sec-title">Barriers with humans that AI doesn't have</h2>
+          <div class="chips">
+            <span class="chip chip-purple">Not enough time</span>
+            <span class="chip chip-purple">Friends are more emotional</span>
+            <span class="chip chip-teal">Friends know the people involved</span>
+            <span class="chip chip-teal">Risk of judgment</span>
+            <span class="chip chip-amber">Not always available</span>
+            <span class="chip chip-amber">Miscommunication / tone</span>
+            <span class="chip chip-coral">Risk of worrying friends</span>
+            <span class="chip chip-coral">Friends have their own bias</span>
+            <span class="chip chip-gray">Real connection missing with AI</span>
+          </div>
+        </section>
+
+      </div>
+    </div>
+
+    <!-- ── PEW/JAMA VISUALIZATION ─────────────────────────────── -->
+    <div class="pew-viz">
+
+      <div class="pew-header">
+        <p class="pew-eyebrow">External Research · Pew &amp; JAMA</p>
+        <h2 class="pew-heading">Teen AI Use in Context</h2>
+        <p class="pew-subhead">Broader data on how young people use and perceive AI chatbots</p>
+      </div>
+
+      <div class="pew-body">
+
+        <section class="pew-section">
+          <p class="pew-sec-title">What teens use AI chatbots for</p>
+          <div class="pew-bar-row"><span class="pew-bar-lbl">Search for information</span><div class="pew-bar-track"><div class="pew-bar-fill" style="width:57%;background:#5B8BD6;"></div></div><span class="pew-bar-pct">57%</span></div>
+          <div class="pew-bar-row"><span class="pew-bar-lbl">Help with schoolwork</span><div class="pew-bar-track"><div class="pew-bar-fill" style="width:54%;background:#6CAF7A;"></div></div><span class="pew-bar-pct">54%</span></div>
+          <div class="pew-bar-row"><span class="pew-bar-lbl">Fun or entertainment</span><div class="pew-bar-track"><div class="pew-bar-fill" style="width:47%;background:#EF9F27;"></div></div><span class="pew-bar-pct">47%</span></div>
+          <div class="pew-bar-row"><span class="pew-bar-lbl">Learn about a topic</span><div class="pew-bar-track"><div class="pew-bar-fill" style="width:44%;background:#5DCAA5;"></div></div><span class="pew-bar-pct">44%</span></div>
+          <div class="pew-bar-row"><span class="pew-bar-lbl">Creative writing / art</span><div class="pew-bar-track"><div class="pew-bar-fill" style="width:30%;background:#D4537E;"></div></div><span class="pew-bar-pct">30%</span></div>
+          <div class="pew-bar-row"><span class="pew-bar-lbl">Practice a language</span><div class="pew-bar-track"><div class="pew-bar-fill" style="width:19%;background:#AFA9EC;"></div></div><span class="pew-bar-pct">19%</span></div>
+          <div class="pew-bar-row"><span class="pew-bar-lbl">Talk through problems</span><div class="pew-bar-track"><div class="pew-bar-fill" style="width:16%;background:#E07070;"></div></div><span class="pew-bar-pct">16%</span></div>
+          <div class="pew-bar-row pew-bar-highlight"><span class="pew-bar-lbl">Emotional support</span><div class="pew-bar-track"><div class="pew-bar-fill" style="width:12%;background:#7F77DD;"></div></div><span class="pew-bar-pct">12%</span></div>
+        </section>
+
+        <div class="pew-divider"></div>
+
+        <section class="pew-section">
+          <p class="pew-sec-title">AI use for mental health advice by age group</p>
+          <p class="pew-sec-sub">Hover to see breakdown</p>
+          <div class="pew-pie-outer">
+            <div class="pew-pie-block">
+              <p class="pew-pie-title">All youth (ages 12–21) · JAMA, 2025</p>
+              <div class="pew-pie-inner">
+                <div class="pew-pie-wrap" id="wrap1"><canvas id="pie1"></canvas></div>
+                <div class="pew-pie-leg">
+                  <p class="pew-leg-ctx" id="ctx1">Out of this 13.1%:</p>
+                  <div id="leg1"></div>
+                </div>
+              </div>
+            </div>
+            <div class="pew-pie-block">
+              <p class="pew-pie-title">Young adults (ages 18–21) · JAMA, 2025</p>
+              <div class="pew-pie-inner">
+                <div class="pew-pie-wrap" id="wrap2"><canvas id="pie2"></canvas></div>
+                <div class="pew-pie-leg">
+                  <p class="pew-leg-ctx" id="ctx2">Out of this 22.2%:</p>
+                  <div id="leg2"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div class="pew-divider"></div>
+
+        <section class="pew-section">
+          <p class="pew-sec-title">How teens view AI's future impact</p>
+          <p class="pew-sec-sub">Pew Research, 2026 · % of teens who say AI will have this effect on their personal life</p>
+          <div class="pew-view-row"><span class="pew-view-lbl">Very positive</span><div class="pew-view-track"><div class="pew-view-fill" style="width:16%;background:#1D9E75;"></div></div><span class="pew-view-pct" style="color:#5DCAA5;">16%</span></div>
+          <div class="pew-view-row"><span class="pew-view-lbl">Somewhat positive</span><div class="pew-view-track"><div class="pew-view-fill" style="width:39%;background:#5DCAA5;"></div></div><span class="pew-view-pct" style="color:#5DCAA5;">39%</span></div>
+          <div class="pew-view-row"><span class="pew-view-lbl">No difference</span><div class="pew-view-track"><div class="pew-view-fill" style="width:25%;background:rgba(240,247,255,0.2);"></div></div><span class="pew-view-pct">25%</span></div>
+          <div class="pew-view-row"><span class="pew-view-lbl">Somewhat negative</span><div class="pew-view-track"><div class="pew-view-fill" style="width:14%;background:#E07070;"></div></div><span class="pew-view-pct" style="color:#E07070;">14%</span></div>
+          <div class="pew-view-row"><span class="pew-view-lbl">Very negative</span><div class="pew-view-track"><div class="pew-view-fill" style="width:6%;background:#D4537E;"></div></div><span class="pew-view-pct" style="color:#D4537E;">6%</span></div>
+        </section>
+
+        <div class="pew-divider"></div>
+
+        <section class="pew-section">
+          <p class="pew-sec-title">Teen AI chatbot confidence</p>
+          <p class="pew-sec-sub">Pew Research, 2026 · Self-reported digital literacy — not enthusiasm. High confidence means a teen thinks they can catch AI mistakes, not that they trust AI more.</p>
+          <div class="pew-conf-grid">
+            <div class="pew-conf-card">
+              <p class="pew-conf-big" style="color:#7F77DD;">51%</p>
+              <p class="pew-conf-desc">say they are at least somewhat confident they can tell when AI is wrong</p>
+            </div>
+            <div class="pew-conf-card">
+              <p class="pew-conf-big" style="color:#5DCAA5;">46%</p>
+              <p class="pew-conf-desc">say they understand "a lot" or "some" about how AI chatbots work</p>
+            </div>
+          </div>
+          <p class="pew-conf-note">Note: Pew found that self-reported confidence does not predict actual accuracy in identifying AI errors — awareness and ability remain distinct.</p>
+        </section>
+
+      </div>
+    </div>
+
     <div class="scroll-hint">
       <span>Scroll to explore</span>
       <div class="arrow"></div>

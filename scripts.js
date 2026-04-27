@@ -324,4 +324,134 @@ document.addEventListener('DOMContentLoaded', () => {
   }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
 
   document.querySelectorAll('.cluster-row').forEach(row => observer.observe(row));
+
+  // ── Survey charts ──
+  new Chart(document.getElementById('freqChart'), {
+    type: 'pie',
+    data: {
+      labels: ['Daily or more', 'Multiple/week', 'Once/week', 'Few times/month', 'Rarely/never'],
+      datasets: [{
+        data: [3, 1, 1, 4, 5],
+        backgroundColor: ['#7F77DD', '#5DCAA5', '#EF9F27', '#378ADD', '#D4537E'],
+        borderWidth: 2,
+        borderColor: '#060910'
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } }
+    }
+  });
+
+  new Chart(document.getElementById('typeChart'), {
+    type: 'bar',
+    data: {
+      labels: ['Decision-making', 'Social advice', 'Personal problems', 'Venting', 'Casual chat', 'Day recap', 'Other'],
+      datasets: [{
+        label: 'Respondents',
+        data: [10, 6, 5, 5, 4, 3, 3],
+        backgroundColor: '#7F77DD',
+        borderRadius: 4,
+        borderSkipped: false
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: {
+          max: 14,
+          ticks: { stepSize: 2, color: '#9ab4cc', font: { family: 'DM Sans', size: 12 } },
+          grid: { color: 'rgba(240,247,255,0.06)' },
+          border: { display: false }
+        },
+        y: {
+          ticks: { color: '#9ab4cc', font: { family: 'DM Sans', size: 13 } },
+          grid: { display: false },
+          border: { display: false }
+        }
+      }
+    }
+  });
+
+  const scaleScores = [
+    { label: "AI validates feelings",       val: ((3+9+1+8+9+8+3)/7*7 + (4+4+5+5)/4*2*4) / 11, color: '#5DCAA5' },
+    { label: "AI offers advice",            val: ((6+1+1+6+0+9+7)/7*7 + (3+5+5+3)/4*2*4) / 11, color: '#7F77DD' },
+    { label: "Advice: feel heard",          val: (2+4+3+3)/4*2,                                  color: '#AFA9EC' },
+    { label: "Advice: emotional feeling",   val: ((4+0+1+2+2+1+8)/7*7 + (1+4+4+3)/4*2*4) / 11, color: '#EF9F27' },
+    { label: "AI remembers past convos",    val: ((5+7+1+3+4+3+8)/7*7 + (1+1+5+4)/4*2*4) / 11, color: '#888780' },
+    { label: "AI mirrors speech style",     val: ((1+8+1+6+6+5+8)/7*7 + (1+3+4+4)/4*2*4) / 11, color: '#D4537E' },
+    { label: "Likely to continue using AI", val: (5+6+1+8+5+6+6)/7,                              color: '#5DCAA5' },
+    { label: "AI makes you feel better",    val: (2+3+1+5+9+5+8)/7,                              color: '#378ADD' },
+  ];
+
+  const scaleContainer = document.getElementById('scaleRows');
+  scaleScores.forEach(d => {
+    const pct = Math.min(100, (d.val / 10) * 100).toFixed(1);
+    const row = document.createElement('div');
+    row.className = 'bar-row';
+    row.innerHTML = `
+      <div class="bar-label">${d.label}</div>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:0%;background:${d.color};" data-target="${pct}"></div>
+      </div>
+      <div class="bar-val">${d.val.toFixed(1)}</div>
+    `;
+    scaleContainer.appendChild(row);
+  });
+
+  requestAnimationFrame(() => {
+    document.querySelectorAll('.bar-fill').forEach(el => {
+      el.style.width = el.dataset.target + '%';
+    });
+  });
+
+  // ── Pew/JAMA pie charts ──
+  function buildPewLeg(id, rows) {
+    document.getElementById(id).innerHTML = rows.map(r =>
+      `<div class="pew-leg-row"><span class="pew-leg-swatch" style="background:${r.c};"></span><span class="pew-leg-text">${r.label}: <strong>${r.val}</strong></span></div>`
+    ).join('');
+  }
+
+  const pd1def = { labels:['Used AI','Did not'], datasets:[{data:[13.1,86.9], backgroundColor:['#7F77DD','rgba(240,247,255,0.1)'], borderWidth:0}] };
+  const pd1exp = { labels:['Helpful','Not helpful'], datasets:[{data:[92.7,7.3], backgroundColor:['#7F77DD','#D4537E'], borderWidth:0}] };
+  const pd2def = { labels:['Used AI','Did not'], datasets:[{data:[22.2,77.8], backgroundColor:['#5DCAA5','rgba(240,247,255,0.1)'], borderWidth:0}] };
+  const pd2exp = { labels:['Helpful','Not helpful'], datasets:[{data:[92.7,7.3], backgroundColor:['#5DCAA5','#D4537E'], borderWidth:0}] };
+
+  const pl1def = [{c:'#7F77DD',label:'Used AI',val:'13.1%'},{c:'rgba(240,247,255,0.15)',label:'Did not',val:'86.9%'}];
+  const pl1exp = [{c:'#7F77DD',label:'Found helpful',val:'92.7%'},{c:'#D4537E',label:'Not helpful',val:'7.3%'}];
+  const pl2def = [{c:'#5DCAA5',label:'Used AI',val:'22.2%'},{c:'rgba(240,247,255,0.15)',label:'Did not',val:'77.8%'}];
+  const pl2exp = [{c:'#5DCAA5',label:'Found helpful',val:'92.7%'},{c:'#D4537E',label:'Not helpful',val:'7.3%'}];
+
+  const pewOpts = { type:'doughnut', options:{ responsive:true, maintainAspectRatio:true, cutout:'60%', animation:{duration:250}, plugins:{legend:{display:false},tooltip:{enabled:false}} } };
+
+  const pc1 = new Chart(document.getElementById('pie1'), {...pewOpts, data: JSON.parse(JSON.stringify(pd1def))});
+  const pc2 = new Chart(document.getElementById('pie2'), {...pewOpts, data: JSON.parse(JSON.stringify(pd2def))});
+  buildPewLeg('leg1', pl1def);
+  buildPewLeg('leg2', pl2def);
+
+  function attachPewHover(wrapId, chart, dDef, dExp, lDef, lExp, legId, ctxId) {
+    const wrap = document.getElementById(wrapId);
+    const ctx  = document.getElementById(ctxId);
+    wrap.addEventListener('mouseenter', () => {
+      wrap.classList.add('hov');
+      chart.data = JSON.parse(JSON.stringify(dExp));
+      chart.update();
+      buildPewLeg(legId, lExp);
+      ctx.classList.add('visible');
+    });
+    wrap.addEventListener('mouseleave', () => {
+      wrap.classList.remove('hov');
+      chart.data = JSON.parse(JSON.stringify(dDef));
+      chart.update();
+      buildPewLeg(legId, lDef);
+      ctx.classList.remove('visible');
+    });
+  }
+
+  attachPewHover('wrap1', pc1, pd1def, pd1exp, pl1def, pl1exp, 'leg1', 'ctx1');
+  attachPewHover('wrap2', pc2, pd2def, pd2exp, pl2def, pl2exp, 'leg2', 'ctx2');
 });
