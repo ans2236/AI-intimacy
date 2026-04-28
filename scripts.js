@@ -276,11 +276,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.querySelectorAll('.reveal, .cluster-row').forEach(el => revealObs.observe(el));
 
-  /* Prose text — paragraphs and section headings fade up on scroll */
-  document.querySelectorAll('.prose p, .prose .section-hed').forEach((el, i) => {
+  /* Prose text — fade in as you reach it, fade out as you scroll past.
+     rootMargin creates a reading window in the middle of the viewport
+     so only ~1-2 paragraphs are visible at once. */
+  const textObs = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      } else {
+        entry.target.classList.remove('visible');
+      }
+    });
+  }, { threshold: 0.2, rootMargin: '-16% 0px -32% 0px' });
+
+  document.querySelectorAll('.prose p, .prose .section-hed').forEach(el => {
     el.classList.add('reveal-text');
-    el.style.setProperty('--reveal-i', i % 5);
-    revealObs.observe(el);
+    textObs.observe(el);
   });
 
   /* ── typeChart ─────────────────────────────────────────────── */
