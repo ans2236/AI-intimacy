@@ -276,6 +276,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.querySelectorAll('.reveal, .cluster-row').forEach(el => revealObs.observe(el));
 
+  /* Prose text — paragraphs and section headings fade up on scroll */
+  document.querySelectorAll('.prose p, .prose .section-hed').forEach((el, i) => {
+    el.classList.add('reveal-text');
+    el.style.setProperty('--reveal-i', i % 5);
+    revealObs.observe(el);
+  });
+
   /* ── typeChart ─────────────────────────────────────────────── */
   new Chart(document.getElementById('typeChart'), {
     type: 'bar',
