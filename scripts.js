@@ -2,40 +2,61 @@
 document.addEventListener('DOMContentLoaded', () => {
   document.body.classList.add('splash-open');
 
-  const splashEl     = document.getElementById('splash');
-  const sendBtn      = document.getElementById('splash-send');
-  const inputField   = document.getElementById('splash-inputfield');
-  const msgsEl       = document.getElementById('splash-msgs');
+  const splashEl      = document.getElementById('splash');
+  const sendBtn       = document.getElementById('splash-send');
+  const inputField    = document.getElementById('splash-inputfield');
+  const msgsEl        = document.getElementById('splash-msgs');
   const continueArrow = document.getElementById('splash-continue-arrow');
-  const timeEl       = document.querySelector('.phone-sbar-time');
+  const timeEl        = document.querySelector('.phone-sbar-time');
 
-  // Live time
   const now = new Date();
   const h = now.getHours() % 12 || 12;
   const m = now.getMinutes().toString().padStart(2, '0');
   const timeStr = `${h}:${m}`;
   timeEl.textContent = timeStr;
 
+  // Pre-loaded conversation history
+  const history = [
+    { role: 'user', text: "I felt safe at that moment, but there are some issues between us—let's not get into those now. After we left, we exchanged a few messages. He asked what I was doing and I said my friend was celebrating with me before I leave. He said 'Enjoy it,' I said 'Okay,' and we never chatted again that whole day. I posted photos from yesterday's party and he didn't like it—he used to like every single one. I just feel weird. Is this normal?" },
+    { role: 'ai',   text: "I understand." },
+    { role: 'user', text: "I felt safe enough to tell him about my previous friends-with-benefits situation. But after we had sex, we barely talk. And the moment I saw he didn't like my post, I got irritated. I want to turn off notifications. I don't know why." },
+    { role: 'ai',   text: "Your feelings are real. It's your need for connection telling you something. Give yourself space, and if you want clarity, find a moment to talk about expectations directly. Don't let small interactions define your self-worth." },
+    { role: 'user', text: "When we met, he even offered to give me his number after I said Instagram isn't my main app. But then he just... never did." },
+    { role: 'ai',   text: "That gap between words and actions is hard." },
+    { role: 'user', text: "I have a problem with it now." },
+    { role: 'ai',   text: "That's natural. Inconsistency makes people hesitate. If he doesn't take initiative, that's a signal—you deserve someone whose actions match their words." },
+    { role: 'ai',   text: "Don't let this weigh you down. Your value doesn't depend on someone's like or reply. Put your energy back into yourself." },
+    { role: 'user', text: "No matter who I date—things are great in person. But when I'm alone and someone replies slowly or less than I expect, I get agitated and keep thinking about it. Is something wrong with me?" },
+    { role: 'ai',   text: "Nothing is wrong with you. We all want responses that make us feel secure. Try giving the relationship space, and don't let their pace control your emotions. If a relationship can't meet your core needs, that's okay—what matters is finding someone whose rhythm suits you." },
+  ];
+
+  history.forEach(({ role, text }) => {
+    const bubble = document.createElement('div');
+    bubble.className = `splash-msg splash-msg-${role === 'user' ? 'user' : 'ai'} preloaded`;
+    bubble.textContent = text;
+    msgsEl.appendChild(bubble);
+  });
+
+  msgsEl.scrollTop = msgsEl.scrollHeight;
+
   sendBtn.addEventListener('click', () => {
+    const msgText = inputField.textContent.trim();
     sendBtn.classList.add('sent');
     inputField.classList.add('sent');
     inputField.textContent = '';
 
     const userMsg = document.createElement('div');
     userMsg.className = 'splash-msg splash-msg-user';
-    userMsg.textContent = 'I feel so annoyed. Can I talk to you about it?';
+    userMsg.textContent = msgText;
     msgsEl.appendChild(userMsg);
-
-    const userTime = document.createElement('div');
-    userTime.className = 'splash-msg-time right';
-    userTime.textContent = timeStr;
-    msgsEl.appendChild(userTime);
+    msgsEl.scrollTop = msgsEl.scrollHeight;
 
     const typing = document.createElement('div');
     typing.className = 'splash-typing';
     typing.innerHTML = '<span class="splash-typing-dot"></span><span class="splash-typing-dot"></span><span class="splash-typing-dot"></span>';
     setTimeout(() => {
       msgsEl.appendChild(typing);
+      msgsEl.scrollTop = msgsEl.scrollHeight;
       requestAnimationFrame(() => requestAnimationFrame(() => typing.classList.add('show')));
     }, 380);
 
@@ -45,13 +66,9 @@ document.addEventListener('DOMContentLoaded', () => {
         typing.remove();
         const aiMsg = document.createElement('div');
         aiMsg.className = 'splash-msg splash-msg-ai';
-        aiMsg.textContent = "Of course you can! What's bothering you right now? Work, school, or some little hiccup in life? Feel free to say anything—I'm listening!";
+        aiMsg.textContent = "Core needs are the things that make you feel safe, respected, and authentic. Think back—when did you feel most grounded and understood in past relationships? The needs present in those moments are yours.";
         msgsEl.appendChild(aiMsg);
-
-        const aiTime = document.createElement('div');
-        aiTime.className = 'splash-msg-time';
-        aiTime.textContent = timeStr;
-        msgsEl.appendChild(aiTime);
+        msgsEl.scrollTop = msgsEl.scrollHeight;
 
         setTimeout(() => {
           continueArrow.classList.add('show');
@@ -71,15 +88,11 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.classList.remove('splash-open');
   }
 
-  function onScroll(e) {
-    if (e.deltaY > 10) dismiss();
-  }
+  function onScroll(e) { if (e.deltaY > 10) dismiss(); }
 
   let touchStartY = 0;
   function onTouchStart(e) { touchStartY = e.touches[0].clientY; }
-  function onTouchMove(e) {
-    if (touchStartY - e.touches[0].clientY > 30) dismiss();
-  }
+  function onTouchMove(e) { if (touchStartY - e.touches[0].clientY > 30) dismiss(); }
 });
 
 /* ─── CHAT DATA ──────────────────────────────────────────────── */
