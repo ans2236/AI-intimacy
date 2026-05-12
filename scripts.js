@@ -269,7 +269,7 @@ function buildStickFigure(p, index) {
           <line x1="20" y1="50" x2="10" y2="70"/>
           <line x1="20" y1="50" x2="30" y2="70"/>
         </svg>
-        <span class="stick-name">${name}</span>
+        <span class="stick-name">${name.split(' ')[0]}</span>
         ${tooltip}
       </div>
     </div>`;
@@ -420,18 +420,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.querySelectorAll('.reveal, .cluster-row').forEach(el => revealObs.observe(el));
 
-  /* Prose text — fade in as you reach it, fade out as you scroll past */
+  /* Prose text — fade in once as you scroll to it (one-way, no flicker).
+     Only targets direct <p> children of .prose so nested figure content
+     (e.g. chat bubbles) isn't hidden and doesn't need scrolling to appear. */
   const textObs = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         entry.target.classList.add('visible');
-      } else {
-        entry.target.classList.remove('visible');
+        textObs.unobserve(entry.target);
       }
     });
-  }, { threshold: 0.2, rootMargin: '-16% 0px -32% 0px' });
+  }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
 
-  document.querySelectorAll('.prose p, .prose .section-hed').forEach(el => {
+  document.querySelectorAll('.prose > p, .prose .section-hed').forEach(el => {
     el.classList.add('reveal-text');
     textObs.observe(el);
   });
