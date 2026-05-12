@@ -1561,16 +1561,18 @@ body.splash-open { overflow: hidden; }
 
 .phone-inputfield {
   flex: 1;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(154,180,204,0.1);
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(240,247,255,0.28);
   border-radius: 8px;
   padding: 10px 14px;
   font-family: var(--sans);
-  font-size: 0.76rem;
-  color: var(--ink-dim);
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--ice-1);
   line-height: 1.4;
   min-height: 42px;
   transition: opacity 0.4s;
+  text-shadow: 0 0 20px rgba(240,247,255,0.25);
 }
 
 .phone-inputfield.sent { opacity: 0; }
@@ -1607,21 +1609,16 @@ body.splash-open { overflow: hidden; }
 }
 
 .splash-continue-arrow {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  border: 1px solid rgba(154,180,204,0.22);
-  background: transparent;
-  color: var(--ink-dim);
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  cursor: pointer;
+  gap: 6px;
+  color: var(--ink-dim);
   opacity: 0;
   transform: translateY(8px);
-  transition: opacity 0.5s var(--ease-out), transform 0.5s var(--ease-out), border-color 0.2s, color 0.2s;
+  transition: opacity 0.5s var(--ease-out), transform 0.5s var(--ease-out);
   pointer-events: none;
-  animation: arrowBob 2s ease-in-out infinite paused;
+  animation: arrowBob 1.8s ease-in-out infinite paused;
 }
 
 .splash-continue-arrow.show {
@@ -1631,14 +1628,18 @@ body.splash-open { overflow: hidden; }
   animation-play-state: running;
 }
 
-.splash-continue-arrow:hover {
-  border-color: #2563eb;
-  color: #2563eb;
-}
+.splash-continue-arrow svg { width: 20px; height: 20px; }
 
-.splash-continue-arrow svg { width: 18px; height: 18px; }
+.splash-scroll-label {
+  font-family: var(--sans);
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+}
 
 @keyframes arrowBob {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(5px); }
+  50% { transform: translateY(6px); }
 }

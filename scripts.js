@@ -53,15 +53,33 @@ document.addEventListener('DOMContentLoaded', () => {
         aiTime.textContent = timeStr;
         msgsEl.appendChild(aiTime);
 
-        setTimeout(() => continueArrow.classList.add('show'), 500);
+        setTimeout(() => {
+          continueArrow.classList.add('show');
+          splashEl.addEventListener('wheel', onScroll, { passive: true });
+          splashEl.addEventListener('touchstart', onTouchStart, { passive: true });
+          splashEl.addEventListener('touchmove', onTouchMove, { passive: true });
+        }, 500);
       }, 180);
     }, 1900);
   });
 
-  continueArrow.addEventListener('click', () => {
+  function dismiss() {
+    splashEl.removeEventListener('wheel', onScroll);
+    splashEl.removeEventListener('touchstart', onTouchStart);
+    splashEl.removeEventListener('touchmove', onTouchMove);
     splashEl.classList.add('dismissed');
     document.body.classList.remove('splash-open');
-  });
+  }
+
+  function onScroll(e) {
+    if (e.deltaY > 10) dismiss();
+  }
+
+  let touchStartY = 0;
+  function onTouchStart(e) { touchStartY = e.touches[0].clientY; }
+  function onTouchMove(e) {
+    if (touchStartY - e.touches[0].clientY > 30) dismiss();
+  }
 });
 
 /* ─── CHAT DATA ──────────────────────────────────────────────── */
