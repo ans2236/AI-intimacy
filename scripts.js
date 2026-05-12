@@ -6,11 +6,22 @@ document.addEventListener('DOMContentLoaded', () => {
   const sendBtn    = document.getElementById('splash-send');
   const inputField = document.getElementById('splash-inputfield');
   const msgsEl     = document.getElementById('splash-msgs');
-  const arrowBtn   = document.getElementById('splash-arrow');
+  const dotsEl     = document.getElementById('splash-dots');
+  const exitMenu   = document.getElementById('phone-exit-menu');
+  const exitBtn    = document.getElementById('phone-exit-btn');
+  const timeEl     = document.querySelector('.phone-sbar-time');
+
+  // Live time
+  const now = new Date();
+  const h = now.getHours() % 12 || 12;
+  const m = now.getMinutes().toString().padStart(2, '0');
+  const timeStr = `${h}:${m}`;
+  timeEl.textContent = timeStr;
 
   sendBtn.addEventListener('click', () => {
     sendBtn.classList.add('sent');
     inputField.classList.add('sent');
+    inputField.textContent = '';
 
     const userMsg = document.createElement('div');
     userMsg.className = 'splash-msg splash-msg-user';
@@ -19,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const userTime = document.createElement('div');
     userTime.className = 'splash-msg-time right';
-    userTime.textContent = '2:14 am';
+    userTime.textContent = timeStr;
     msgsEl.appendChild(userTime);
 
     const typing = document.createElement('div');
@@ -41,15 +52,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const aiTime = document.createElement('div');
         aiTime.className = 'splash-msg-time';
-        aiTime.textContent = '2:14 am';
+        aiTime.textContent = timeStr;
         msgsEl.appendChild(aiTime);
 
-        setTimeout(() => arrowBtn.classList.add('show'), 520);
+        setTimeout(() => dotsEl.classList.add('glowing'), 500);
       }, 180);
     }, 1900);
   });
 
-  arrowBtn.addEventListener('click', () => {
+  dotsEl.addEventListener('click', () => {
+    if (!dotsEl.classList.contains('glowing')) return;
+    exitMenu.classList.add('show');
+  });
+
+  exitBtn.addEventListener('click', () => {
     splashEl.classList.add('dismissed');
     document.body.classList.remove('splash-open');
   });
