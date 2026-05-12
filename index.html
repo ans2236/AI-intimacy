@@ -32,9 +32,12 @@
         </button>
       </div>
     </div>
-    <p class="splash-caption" id="splash-caption">This is a real conversation Cecilia had with ChatGPT about her dating issues. Did you have fun roleplaying as her?<br><span class="splash-caption-cta">Scroll to explore</span></p>
-    <div class="splash-continue-arrow" id="splash-continue-arrow">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+    <div class="splash-footer">
+      <p class="splash-caption" id="splash-caption">This is a real conversation Cecilia, a Master's student at Columbia, had with ChatGPT about her dating issues. Did you have fun roleplaying as her?</p>
+      <p class="splash-scroll-cta" id="splash-scroll-cta">Scroll to explore</p>
+      <div class="splash-continue-arrow" id="splash-continue-arrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+      </div>
     </div>
   </div>
 
@@ -45,11 +48,20 @@
     <p class="story-byline">Alessandra Shires | Charlie Bloomer | Emily Wang | Tiffany Yuan</p>
   </header>
 
+  <!-- ── ARTICLE ───────────────────────────────────────────────── -->
+  <article class="prose">
+
+    <h2 class="section-hed">Beyond Academic Help</h2>
+
+    <p>Dating in New York City can be stressful. For some, the fast paced nature of the city can call for additional emotional support and validation. Cecilia, an international master's student from China at Columbia, talked to a familiar voice. But instead of sitting on a cushioned couch and relaying her emotions to a living therapist, Cecilia poured her qualms into the generative artificial intelligence model ChatGPT.</p>
+
+    <p>College students are venting issues into generative AI models such as Claude and ChatGPT to alleviate stress, and in some cases, use AI as a replacement or as an alternative to therapy. Young adults faced with intense challenges, transitions and important life decisions see the automated models as an antidote to anxiety, discomfort with friends or other mental health struggles.</p>
+
   <!-- ── INTERACTIVE MAP ──────────────────────────────────────── -->
   <section id="map-section">
     <div class="map-intro">
-      <h2 class="map-title">Beyond Academic Help.</h2>
-      <p class="map-sub">For college students, chatbots like ChatGPT, Claude, and DeepSeek have become sources of comfort.<br>Click to read simulated ChatGPT conversations based on real-world situations.</p>
+      <h2 class="map-title">More Roleplay Time!</h2>
+      <p class="map-sub">For college students, chatbots like ChatGPT, Claude, and DeepSeek have become sources of comfort.<br>Click to experience real conversations students had with ChatGPT.</p>
     </div>
     <div class="map-canvas-wrap">
       <canvas id="map-stars"></canvas>
@@ -67,30 +79,30 @@
           <line x1="150" y1="200" x2="720" y2="180" class="map-connector"/>
         </g>
         <!-- Dot: Rena (Columbia, NYC area — left) -->
-        <g class="map-dot-group" data-subject="rena" transform="translate(150,200)">
+        <g class="map-dot-group" data-subject="felicity" transform="translate(150,200)">
           <circle class="dot-ring dot-ring-3" r="38"/>
           <circle class="dot-ring dot-ring-2" r="24"/>
           <circle class="dot-ring dot-ring-1" r="14"/>
           <circle class="dot-core" r="5"/>
-          <text class="dot-label" dy="-20">Rena</text>
+          <text class="dot-label" dy="-20">Felicity</text>
           <text class="dot-sublabel" dy="-8">Columbia · New York</text>
         </g>
-        <!-- Dot: Nawal (UTM — center) -->
-        <g class="map-dot-group" data-subject="nawal" transform="translate(450,300)">
+        <!-- Dot: Bethany (Columbia — center) -->
+        <g class="map-dot-group" data-subject="bethany" transform="translate(450,300)">
           <circle class="dot-ring dot-ring-3" r="38"/>
           <circle class="dot-ring dot-ring-2" r="24"/>
           <circle class="dot-ring dot-ring-1" r="14"/>
           <circle class="dot-core" r="5"/>
-          <text class="dot-label" dy="-20">Nawal</text>
-          <text class="dot-sublabel" dy="-8">UTM · Toronto</text>
+          <text class="dot-label" dy="-20">Bethany</text>
+          <text class="dot-sublabel" dy="-8">Columbia · New York</text>
         </g>
-        <!-- Dot: Cici (Columbia — right) -->
-        <g class="map-dot-group" data-subject="cici" transform="translate(720,180)">
+        <!-- Dot: Cecilia (Columbia — right) -->
+        <g class="map-dot-group" data-subject="cecilia" transform="translate(720,180)">
           <circle class="dot-ring dot-ring-3" r="38"/>
           <circle class="dot-ring dot-ring-2" r="24"/>
           <circle class="dot-ring dot-ring-1" r="14"/>
           <circle class="dot-core" r="5"/>
-          <text class="dot-label" dy="-20">Cici</text>
+          <text class="dot-label" dy="-20">Cecilia</text>
           <text class="dot-sublabel" dy="-8">Columbia · New York</text>
         </g>
       </svg>
@@ -108,7 +120,7 @@
           <div class="chat-subject-name" id="chat-name"></div>
           <div class="chat-subject-meta" id="chat-meta"></div>
         </div>
-        <div class="chat-sidebar-note">This conversation is reconstructed from interview transcripts.<br><br>Click each message to send it.</div>
+        <div class="chat-sidebar-note">Click each message to send it.</div>
       </aside>
       <!-- Chat area -->
       <div class="chat-main">
@@ -122,13 +134,6 @@
       </div>
     </div>
   </div>
-
-  <!-- ── ARTICLE ───────────────────────────────────────────────── -->
-  <article class="prose">
-
-    <p>Dating in New York City can be stressful. For some, the fast paced nature of the city can call for additional emotional support and validation. Cecilia, an international master's student from China at Columbia, talked to a familiar voice. But instead of sitting on a cushioned couch and relaying her emotions to a living therapist, Cecilia poured her qualms into the generative artificial intelligence model ChatGPT.</p>
-
-    <p>College students are venting issues into generative AI models such as Claude and ChatGPT to alleviate stress, and in some cases, use AI as a replacement or as an alternative to therapy. Young adults faced with intense challenges, transitions and important life decisions see the automated models as an antidote to anxiety, discomfort with friends or other mental health struggles.</p>
 
     <p>"In New York I'm not familiar with the dating culture and I got hurt several times," Cecilia said. "I'm also getting used to it by using ChatGPT." She adds it's not ChatGPT alone that helps, but moreover the ability to vent to someone who is not emotional. "I need a person to be there to hear all my stuff. That's it."</p>
 
@@ -185,8 +190,6 @@
 
     <p>Rena (name changed for privacy), a sophomore at Barnard, shared similar experiences using AI Chatbot rather than consulting a therapist. "I thought about booking off-campus therapy sessions in Midtown, but I never managed to go." The 25-minute commute during midterm season, combined with the possibility of long wait times at the therapist's office, discouraged her from attending sessions and led her to turn to AI Chatbots as a more efficient alternative.</p>
 
-    <p class="pseudonym-note"><em>Names of survey participants have been replaced with pseudonyms to protect their privacy.</em></p>
-
     <p>For young people, doubts do appear in the use of AI, such as data phishing. "I mean, there's a lot of times where I'm like, Oh, maybe I shouldn't put this information about myself, or maybe I shouldn't be so specific about this because, you know, I don't know the capabilities of it," Shebe said.</p>
 
     <p>Kubler warned us in our interview against students establishing a relationship with AI. "People are starting to really believe that they have a relationship with AI, and that's obviously not true, and that seems damaging."</p>
@@ -201,13 +204,145 @@
 
     <p>Rena shared how she found out AI Chatbots possess humanistic characteristics. As both ChatGPT and Claude user, she identified strengths of both chatbots: ChatGPT has good memory and sends you emojis, similar to how people text in real life; Claude's responses are especially reassuring when it comes to difficult situations.</p>
 
+    <!-- ── FIGURE: Brain ──────────────────────────────────── -->
+    <figure class="fig-brain">
+      <div class="brain-container">
+        <div class="brain-tip" id="brain-tip-thinking">
+          <div class="brain-tip-inner">Students had a solid understanding of AI as something that is not a person, which will validate what you say most of the time.</div>
+        </div>
+        <svg class="brain-svg" viewBox="0 0 500 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Interactive brain diagram divided into thinking and feeling regions">
+          <defs>
+            <clipPath id="clip-think">
+              <path d="M 242,14 C 200,10 158,14 126,30 C 90,48 60,78 42,116 C 26,150 24,188 36,222 C 50,258 82,280 126,292 C 160,300 200,302 242,298 Z"/>
+            </clipPath>
+            <clipPath id="clip-feel">
+              <path d="M 242,14 C 288,10 335,25 370,55 C 405,85 428,128 440,172 C 450,210 448,250 438,278 C 428,302 408,312 385,310 C 360,312 320,306 280,302 C 263,300 252,299 242,298 Z"/>
+            </clipPath>
+          </defs>
+
+          <!-- THINKING region -->
+          <g class="brain-region" id="brain-thinking" tabindex="0" aria-label="Thinking brain region">
+            <g clip-path="url(#clip-think)">
+              <polygon class="brain-tri bt-a" points="90,26 158,8 122,48"/>
+              <polygon class="brain-tri bt-b" points="158,8 242,14 198,35"/>
+              <polygon class="brain-tri bt-c" points="158,8 198,35 122,48"/>
+              <polygon class="brain-tri bt-d" points="52,70 90,26 88,82"/>
+              <polygon class="brain-tri bt-a" points="90,26 122,48 88,82"/>
+              <polygon class="brain-tri bt-b" points="122,48 198,35 158,68"/>
+              <polygon class="brain-tri bt-c" points="198,35 242,14 235,72"/>
+              <polygon class="brain-tri bt-d" points="198,35 235,72 158,68"/>
+              <polygon class="brain-tri bt-a" points="34,122 52,70 88,82"/>
+              <polygon class="brain-tri bt-b" points="34,122 88,82 62,132"/>
+              <polygon class="brain-tri bt-c" points="88,82 122,48 118,100"/>
+              <polygon class="brain-tri bt-d" points="122,48 158,68 118,100"/>
+              <polygon class="brain-tri bt-a" points="158,68 235,72 215,98"/>
+              <polygon class="brain-tri bt-b" points="158,68 215,98 118,100"/>
+              <polygon class="brain-tri bt-c" points="26,175 34,122 62,132"/>
+              <polygon class="brain-tri bt-d" points="26,175 62,132 52,190"/>
+              <polygon class="brain-tri bt-a" points="62,132 88,82 118,100"/>
+              <polygon class="brain-tri bt-b" points="62,132 118,100 108,158"/>
+              <polygon class="brain-tri bt-c" points="118,100 215,98 168,140"/>
+              <polygon class="brain-tri bt-d" points="118,100 168,140 108,158"/>
+              <polygon class="brain-tri bt-a" points="215,98 235,72 242,168"/>
+              <polygon class="brain-tri bt-b" points="215,98 242,168 168,140"/>
+              <polygon class="brain-tri bt-c" points="28,225 26,175 52,190"/>
+              <polygon class="brain-tri bt-d" points="28,225 52,190 46,260"/>
+              <polygon class="brain-tri bt-a" points="52,190 62,132 108,158"/>
+              <polygon class="brain-tri bt-b" points="52,190 108,158 100,208"/>
+              <polygon class="brain-tri bt-c" points="108,158 168,140 162,198"/>
+              <polygon class="brain-tri bt-d" points="108,158 162,198 100,208"/>
+              <polygon class="brain-tri bt-a" points="168,140 242,168 242,238"/>
+              <polygon class="brain-tri bt-b" points="168,140 242,238 162,198"/>
+              <polygon class="brain-tri bt-c" points="46,260 52,190 100,208"/>
+              <polygon class="brain-tri bt-d" points="46,260 100,208 80,245"/>
+              <polygon class="brain-tri bt-a" points="100,208 162,198 152,248"/>
+              <polygon class="brain-tri bt-b" points="100,208 152,248 80,245"/>
+              <polygon class="brain-tri bt-c" points="162,198 242,238 188,268"/>
+              <polygon class="brain-tri bt-d" points="162,198 188,268 152,248"/>
+              <polygon class="brain-tri bt-a" points="80,245 152,248 125,278"/>
+              <polygon class="brain-tri bt-b" points="152,248 188,268 242,268"/>
+              <polygon class="brain-tri bt-c" points="152,248 242,268 178,295"/>
+              <polygon class="brain-tri bt-d" points="152,248 178,295 125,278"/>
+              <polygon class="brain-tri bt-a" points="125,278 178,295 242,298"/>
+              <polygon class="brain-tri bt-b" points="80,245 125,278 78,285"/>
+              <polygon class="brain-tri bt-c" points="78,285 125,278 108,298"/>
+              <polygon class="brain-tri bt-d" points="108,298 178,295 242,298"/>
+            </g>
+            <path class="brain-border brain-border-think" d="M 242,14 C 200,10 158,14 126,30 C 90,48 60,78 42,116 C 26,150 24,188 36,222 C 50,258 82,280 126,292 C 160,300 200,302 242,298"/>
+            <path class="brain-hit" d="M 242,14 C 200,10 158,14 126,30 C 90,48 60,78 42,116 C 26,150 24,188 36,222 C 50,258 82,280 126,292 C 160,300 200,302 242,298 Z"/>
+            <text class="brain-region-name brain-region-name-think" x="135" y="165">THINKING</text>
+          </g>
+
+          <!-- FEELING region -->
+          <g class="brain-region" id="brain-feeling" tabindex="0" aria-label="Feeling brain region">
+            <g clip-path="url(#clip-feel)">
+              <polygon class="brain-tri bf-a" points="394,26 326,8 362,48"/>
+              <polygon class="brain-tri bf-b" points="326,8 242,14 286,35"/>
+              <polygon class="brain-tri bf-c" points="326,8 286,35 362,48"/>
+              <polygon class="brain-tri bf-d" points="432,70 394,26 396,82"/>
+              <polygon class="brain-tri bf-a" points="394,26 362,48 396,82"/>
+              <polygon class="brain-tri bf-b" points="362,48 286,35 326,68"/>
+              <polygon class="brain-tri bf-c" points="286,35 242,14 249,72"/>
+              <polygon class="brain-tri bf-d" points="286,35 249,72 326,68"/>
+              <polygon class="brain-tri bf-a" points="450,122 432,70 396,82"/>
+              <polygon class="brain-tri bf-b" points="450,122 396,82 422,132"/>
+              <polygon class="brain-tri bf-c" points="396,82 362,48 366,100"/>
+              <polygon class="brain-tri bf-d" points="362,48 326,68 366,100"/>
+              <polygon class="brain-tri bf-a" points="326,68 249,72 269,98"/>
+              <polygon class="brain-tri bf-b" points="326,68 269,98 366,100"/>
+              <polygon class="brain-tri bf-c" points="458,175 450,122 422,132"/>
+              <polygon class="brain-tri bf-d" points="458,175 422,132 432,190"/>
+              <polygon class="brain-tri bf-a" points="422,132 396,82 366,100"/>
+              <polygon class="brain-tri bf-b" points="422,132 366,100 376,158"/>
+              <polygon class="brain-tri bf-c" points="366,100 269,98 316,140"/>
+              <polygon class="brain-tri bf-d" points="366,100 316,140 376,158"/>
+              <polygon class="brain-tri bf-a" points="269,98 249,72 242,168"/>
+              <polygon class="brain-tri bf-b" points="269,98 242,168 316,140"/>
+              <polygon class="brain-tri bf-c" points="456,225 458,175 432,190"/>
+              <polygon class="brain-tri bf-d" points="456,225 432,190 438,260"/>
+              <polygon class="brain-tri bf-a" points="432,190 422,132 376,158"/>
+              <polygon class="brain-tri bf-b" points="432,190 376,158 384,208"/>
+              <polygon class="brain-tri bf-c" points="376,158 316,140 322,198"/>
+              <polygon class="brain-tri bf-d" points="376,158 322,198 384,208"/>
+              <polygon class="brain-tri bf-a" points="316,140 242,168 242,238"/>
+              <polygon class="brain-tri bf-b" points="316,140 242,238 322,198"/>
+              <polygon class="brain-tri bf-c" points="438,260 432,190 384,208"/>
+              <polygon class="brain-tri bf-d" points="438,260 384,208 404,245"/>
+              <polygon class="brain-tri bf-a" points="384,208 322,198 332,248"/>
+              <polygon class="brain-tri bf-b" points="384,208 332,248 404,245"/>
+              <polygon class="brain-tri bf-c" points="322,198 242,238 296,268"/>
+              <polygon class="brain-tri bf-d" points="322,198 296,268 332,248"/>
+              <polygon class="brain-tri bf-a" points="404,245 332,248 359,278"/>
+              <polygon class="brain-tri bf-b" points="332,248 296,268 242,268"/>
+              <polygon class="brain-tri bf-c" points="332,248 242,268 306,295"/>
+              <polygon class="brain-tri bf-d" points="332,248 306,295 359,278"/>
+              <polygon class="brain-tri bf-a" points="359,278 306,295 242,298"/>
+              <polygon class="brain-tri bf-b" points="404,245 359,278 406,285"/>
+              <polygon class="brain-tri bf-c" points="406,285 359,278 376,298"/>
+              <polygon class="brain-tri bf-d" points="376,298 306,295 242,298"/>
+            </g>
+            <path class="brain-border brain-border-feel" d="M 242,14 C 288,10 335,25 370,55 C 405,85 428,128 440,172 C 450,210 448,250 438,278 C 428,302 408,312 385,310 C 360,312 320,306 280,302 C 263,300 252,299 242,298"/>
+            <path class="brain-hit" d="M 242,14 C 288,10 335,25 370,55 C 405,85 428,128 440,172 C 450,210 448,250 438,278 C 428,302 408,312 385,310 C 360,312 320,306 280,302 C 263,300 252,299 242,298 Z"/>
+            <text class="brain-region-name brain-region-name-feel" x="350" y="165">FEELING</text>
+          </g>
+
+          <!-- Dividing line -->
+          <path class="brain-divide" d="M 242,14 C 244,90 244,165 244,220 C 244,250 243,275 242,298"/>
+          <!-- Base ring -->
+          <ellipse class="brain-base" cx="244" cy="308" rx="116" ry="8"/>
+        </svg>
+        <div class="brain-tip" id="brain-tip-feeling">
+          <div class="brain-tip-inner">However, even as they rationally understood this, unconsciously they began to form familiarity, social bonds, and reliance on these AI models.</div>
+        </div>
+      </div>
+      <p class="brain-hint">Hover over each region</p>
+    </figure>
+
     <p>Shebe's background in using AI to vent was originally academic. "In the beginning, I actually tried my best not to [use AI]," she said. She started relying on AI around 10th grade, first asking it questions for school assignments and academic work. Over time she became more dependent on it: as a senior in high school, she started turning to the model in moments of social isolation.</p>
 
     <p>"It's like different kinds of venting," Shebe said. The first year found that in moments of career anxiety where she's searching for pragmatic advice about the future, she turns to AI. But in moments of emotional distress, she turns to her friends for help. Shebe also added the social isolation of her respective university pushed her to use AI for mental health.</p>
 
     <p>But this perfect friend with such a newly under-researched background remains skeptical to professionals. "AI might be really good at giving," Kubler said. "A kind of a perfect answer to somebody. It takes humanity out. A therapist would have an emotional reaction to a patient. If you are really well trained, that's a part of therapy."</p>
-
-    <p>The messy, human aspects of therapy — the ability to relate to another person and understand how to pull someone out of a traumatized state — are two shortcomings of artificial intelligence. Despite this, young people faced with mental health issues and complex transitions continue to use AI for their immediate comfort.</p>
 
   </article>
 
@@ -218,6 +353,8 @@
     <div id="scaleRows"></div>
     <p class="fig-source">Scores out of 10 &nbsp;·&nbsp; Source: Author survey, 2025–2026</p>
   </figure>
+
+  <p class="prose-closing">The messy, human aspects of therapy — the ability to relate to another person and understand how to pull someone out of a traumatized state — are two shortcomings of artificial intelligence. Despite this, young people faced with mental health issues and complex transitions continue to use AI for their immediate comfort. As AI normalization continues to increase amongst college-age individuals, we may continue to see changes in how students relate to AI and to each other. In light of these findings, critical AI studies and AI literacy remain important areas of growth when thinking about education and setting students up for future social and mental wellbeing.</p>
 
   <!-- ── METHODOLOGY ───────────────────────────────────────── -->
   <section class="methodology-section">

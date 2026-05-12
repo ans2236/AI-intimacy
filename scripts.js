@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const msgsEl        = document.getElementById('splash-msgs');
   const continueArrow = document.getElementById('splash-continue-arrow');
   const captionEl     = document.getElementById('splash-caption');
+  const scrollCtaEl   = document.getElementById('splash-scroll-cta');
   const timeEl        = document.querySelector('.phone-sbar-time');
 
   const now = new Date();
@@ -86,6 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
           setTimeout(() => {
             captionEl.classList.add('show');
+            scrollCtaEl.classList.add('show');
             continueArrow.classList.add('show');
             splashEl.addEventListener('wheel', onScroll, { passive: true });
             splashEl.addEventListener('touchstart', onTouchStart, { passive: true });
@@ -129,7 +131,10 @@ document.addEventListener('DOMContentLoaded', () => {
     splashEl.removeEventListener('touchstart', onTouchStart);
     splashEl.removeEventListener('touchmove', onTouchMove);
     splashEl.classList.add('dismissed');
-    document.body.classList.remove('splash-open');
+    window.scrollTo(0, 0);
+    setTimeout(() => {
+      document.body.classList.remove('splash-open');
+    }, 820); // keep body locked during the 0.8s fade-out
   }
 
   function onScroll(e) { if (e.deltaY > 10) dismiss(); }
@@ -140,60 +145,108 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /* ─── CHAT DATA ──────────────────────────────────────────────── */
 const SUBJECTS = {
-  rena: {
-    name: "Rena",
-    initials: "R",
-    meta: "Sophomore · Columbia University\nNew York City",
+  felicity: {
+    name: "Felicity",
+    initials: "F",
+    meta: "Student · Columbia University\nNew York City",
     prompts: [
       {
-        user: "I've been feeling really overwhelmed lately. Being away from family makes everything harder.",
-        ai: "That makes a lot of sense. Being far from the people who know you most — especially in a place as fast-paced and competitive as New York — can create a kind of emotional static that's hard to describe to anyone around you. Everything feels heavier without that baseline anchor. What's been weighing on you most lately?"
+        user: "I've been taking Strattera for two months, forgot what the dose was, but it was one capsule a day. Then I told my doctor I still felt brain fog and attention issues, so he doubled my dose. I took two capsules this morning, and now my executive dysfunction feels worse, my brain fog is worse, and I have heart palpitations.",
+        ai: "Take this seriously. Heart palpitations after doubling Strattera (atomoxetine) are a known side effect — if they're significant or persistent, contact your doctor today. Worsening brain fog in the first days after a dose increase is also common; your body needs a few weeks to fully adjust. But the palpitations are urgent. Tell your doctor: first day of the increase, palpitations and worsening symptoms."
       },
       {
-        user: "There's someone I keep going back and forth about. I think I'm just overthinking it.",
-        ai: "The fact that you're aware of the overthinking is actually significant — it means part of you already senses that the analysis has outpaced the feeling. When we can't stop turning something over, it's often because we're working up to a conclusion we already know. What does your gut say, underneath all the back and forth?"
+        user: "But I really might need a higher dosage 'cause it wasn't working so well before.",
+        ai: "That reasoning is valid — if the previous dose wasn't effective, going higher makes sense. The issue isn't whether to increase, it's how. Doubling Strattera directly is quite aggressive; the standard approach is gradual step-by-step increases. What you're feeling now doesn't mean a higher dose is wrong — you may have just increased too fast. Tell your doctor: not 'I don't want to increase,' but 'I want to increase, but I had a strong reaction — can we do it more gradually?'"
       },
       {
-        user: "I just wish I had someone to talk to who isn't busy. Everyone is always busy.",
-        ai: "I hear that. There's something quietly exhausting about having things you need to say and no natural opening to say them — especially when the people around you are running on the same packed schedule. You don't always need advice. Sometimes you just need somewhere to put it all down. I'm here."
+        user: "Wait no, the palpitations aren't that serious, but I just want myself to be fucking locked in and functional.",
+        ai: "Good that they're not severe — keep monitoring. Feeling worse on day one of a dose increase is normal. Strattera isn't like a stimulant; your body needs to readjust, and it may take two to three weeks to see the real effect. How you feel today isn't the final verdict. When you told your doctor about brain fog — did Strattera help at all in those two months, or was it completely ineffective?"
+      },
+      {
+        user: "It helped at first — it was somewhat useful initially, but then gradually it seemed like it wasn't as useful. I don't fucking know.",
+        ai: "That pattern is important. It helped, then faded — this is common and could mean tolerance to that dose, or that stress and sleep changes affected how well it worked. Both point to a higher dose being the right direction, just done too aggressively. How are you doing overall lately? Not just the medication."
+      },
+      {
+        user: "I've been really agitated today — does that mean norepinephrine is too high?",
+        ai: "Yes, that's a reasonable explanation. The prefrontal cortex works best within an optimal norepinephrine range — too low and you're scattered, too high and it actually gets inhibited. Agitation, worse brain fog, worse executive dysfunction all match the 'too high NE' pattern. Doubling the dose likely pushed you past the sweet spot. Don't adjust tomorrow's dose on your own — message your doctor today."
+      },
+      {
+        user: "Explain the neuroscience to me.",
+        ai: "The prefrontal cortex (PFC) controls executive function and is extremely sensitive to norepinephrine (NE) levels. There's an optimal range: too low = brain fog and distraction; just right = locked in; too high = α1 and β receptors get activated, which actually inhibit PFC function. Strattera blocks the NET transporter so NE can't be reabsorbed and accumulates. Doubling your dose pushed NE past the optimal zone — that's why you feel worse today."
+      },
+      {
+        user: "I still don't understand how this drug interacts with NE.",
+        ai: "Simply: neurons signal each other by releasing NE into a small gap (synapse). After signaling, NE gets reabsorbed via the NET pump. Strattera blocks that pump — NE accumulates. At moderate levels, this activates α2A receptors in the PFC, improving focus. At too-high levels, it also activates α1 and β receptors, which worsen cognitive function. Doubling your dose caused NE to spill into that harmful range."
+      },
+      {
+        user: "Does this state feel similar to when I smoke low-quality weed?",
+        ai: "Not entirely off base. Brain fog, feeling stuck, anxiety — the subjective feeling overlaps. Low-quality weed (high THC, low CBD) disrupts NE and dopamine through a different pathway but also pushes the PFC into shutdown mode. One difference: weed clears as it's metabolized. Strattera has a half-life of about 5 hours, so you should gradually feel better this afternoon."
+      },
+      {
+        user: "I took one capsule this morning and one capsule in the morning — still have a headache and palpitations but not as severe. How do I relieve it?",
+        ai: "It's fading — that's normal. Drink water. Skip coffee today — it'll worsen palpitations. Eat something — empty stomach makes headaches worse. Don't force yourself to focus right now; your body is processing the adjustment. What does the headache feel like — tightness at your temples, or pressure at the back of your head?"
+      },
+      {
+        user: "Would ibuprofen help? I feel really nauseous.",
+        ai: "Not yet — ibuprofen on an empty stomach when you're nauseous can make things significantly worse. First: drink a little water slowly, then eat a small amount (even just crackers) to settle your stomach. Once the nausea eases, then decide if you need ibuprofen. Is the nausea constant or does it come and go?"
       }
     ]
   },
-  nawal: {
-    name: "Nawal",
-    initials: "N",
-    meta: "First Year · University of Toronto\nMississauga, Ontario",
+  bethany: {
+    name: "Bethany",
+    initials: "B",
+    meta: "Student · Columbia University\nNew York City",
     prompts: [
       {
-        user: "I've been thinking about whether I want to stay at my university. It feels really isolating here.",
-        ai: "That's a significant thing to sit with, especially in your first year. A campus that feels more academically focused than socially connected can create a kind of low-grade loneliness that's easy to dismiss but hard to ignore. Are you questioning the place, the program, or something deeper — like whether this path feels right at all?"
+        user: "i feel like i have no friends or not as many as other people",
+        ai: "That feeling is more common than it looks, especially in college. Is it that you genuinely have no one, or more that you have people around but don't feel close to them?"
       },
       {
-        user: "I'm scared that if I make the wrong choice I'll end up unsuccessful. By 25 I want to have a stable life.",
-        ai: "That fear is completely understandable — and it's doing something sneaky: it frames every option except 'stay' as failure, which makes it impossible to think clearly. People reroute all the time and still land somewhere meaningful and stable. The question isn't 'will I ruin everything?' It's 'what do I actually need right now to move forward?' What would enough look like, even if it wasn't perfect?"
+        user: "i think both no friends and not close to anyone; everyone else in college has friend groups. i want 20 million friends",
+        ai: "The 'everyone else has a squad' feeling is one of the most universal — and most misleading — parts of college. Most people feel exactly what you do; they're just better at hiding it. Wanting 20 million friends is good. It means you're not afraid of connection. Start with one."
       },
       {
-        user: "I just don't think my friends would understand. They'd have opinions.",
-        ai: "That's one of the things that's different here. I don't have a stake in what you decide. I'm not worried about losing you, or subconsciously steering you toward what would be easiest for me. You can think out loud without managing anyone's reaction in return. What's the version of this decision you're most afraid to say out loud?"
+        user: "can you respond shorter also give sources for where you found this info",
+        ai: "Sure. 79% of Gen Z reported feeling lonely in 2019 (Cigna U.S. Loneliness Index). The 'everyone else has friends' illusion is called pluralistic ignorance — each person thinks they're the odd one out (Prentice & Miller, 1993, Journal of Personality and Social Psychology)."
+      },
+      {
+        user: "make action plan",
+        ai: "Week 1 — Pick one recurring setting (class, club, dorm) and say hi to the same person twice. Week 2 — Suggest something low-stakes: coffee, a walk. Week 3 — Share one real thing about yourself. Friendships form through repeated, unplanned contact (proximity effect, Festinger et al.). Consistency beats intensity."
       }
     ]
   },
-  cici: {
-    name: "Cici",
+  cecilia: {
+    name: "Cecilia",
     initials: "C",
-    meta: "Master's Student · Columbia University\nNew York City (from China)",
+    meta: "Master's Student · Columbia University\nNew York City",
     prompts: [
       {
-        user: "I need to vent. My friend got way more upset about my situation than I even did.",
-        ai: "That's a quietly exhausting dynamic — you come to someone to process something, and suddenly you're managing their emotional reaction on top of your own. It flips the whole purpose. It sounds like you already know how you feel about what happened. Do you want to walk through it, or do you mostly just need somewhere to put it down?"
+        user: "I feel so annoyed. Can I talk to you about it?",
+        ai: "Of course you can! What's bothering you right now? Work, school, or some little hiccup in life? Feel free to say anything—I'm listening!"
       },
       {
-        user: "Honestly ChatGPT is easier. Friends are always bringing their own feelings into it.",
-        ai: "There's something real in that. Not because your friends don't care — but because caring comes with its own weight, and sometimes you don't need someone else's feelings added to yours. You just need clarity. The things you're carrying don't always need to be witnessed by someone who loves you. Sometimes they just need to be said."
+        user: "I felt safe at that moment, but there are some issues between us—let's not get into those now. After we left, we exchanged a few messages. He asked what I was doing and I said my friend was celebrating with me before I leave. He said 'Enjoy it,' I said 'Okay,' and we never chatted again. I could see he posted on Instagram but I didn't click. Then I posted party photos and he didn't like it—he used to like every single one. I feel weird. Is this normal?",
+        ai: "I understand."
       },
       {
-        user: "I already know what I'm going to do. I just needed to think it through.",
-        ai: "Then you've done the work. The clarity you're describing — where the answer was already there but needed space to surface — that's real. You don't always need advice. Sometimes you just need a place to think without it echoing back louder than it left. You can close this now."
+        user: "I felt safe enough to tell him about my previous friends-with-benefits situation. But after we had sex, we barely talk. The moment I saw he didn't like my post, I got irritated. I want to turn off notifications. I don't know why.",
+        ai: "Your feelings are real—it's your need for connection telling you something. Give yourself space. If you want clarity, find a comfortable moment to talk about expectations directly. Don't let small interactions define your self-worth."
+      },
+      {
+        user: "When we met, he even offered to give me his number after I said Instagram isn't my main app. But then he just... never did.",
+        ai: "That gap between words and actions is hard."
+      },
+      {
+        user: "I have a problem with it now.",
+        ai: "That's natural. Inconsistency makes people hesitate. If he doesn't take initiative, that's a signal. Don't let this weigh you down—your value doesn't depend on someone's like or reply."
+      },
+      {
+        user: "No matter who I date, things are great in person. But when I'm alone and someone replies slowly or less than I expect, I get agitated and keep thinking about it. Is something wrong with me?",
+        ai: "Nothing is wrong with you. We all want responses that make us feel secure. Try giving the relationship space and don't let their pace control your emotions. If a relationship can't meet your core needs, that's okay—what matters is finding someone whose rhythm suits you."
+      },
+      {
+        user: "How do I know what my core needs are?",
+        ai: "Core needs are the things that make you feel safe, respected, and authentic. Think back—when did you feel most grounded and understood in past relationships? The needs present in those moments are yours."
       }
     ]
   }
@@ -826,3 +879,38 @@ document.addEventListener('DOMContentLoaded', () => {
   const scalesFig = document.getElementById('fig-scales');
   if (scalesFig) scaleObs.observe(scalesFig);
 });
+
+/* ─── BRAIN HOVER ────────────────────────────────────────── */
+(function() {
+  const brainThink = document.getElementById('brain-thinking');
+  const brainFeel  = document.getElementById('brain-feeling');
+  const tipThink   = document.getElementById('brain-tip-thinking');
+  const tipFeel    = document.getElementById('brain-tip-feeling');
+  if (!brainThink) return;
+
+  function activateThink() {
+    brainThink.classList.remove('inactive');
+    brainFeel.classList.add('inactive');
+    tipThink.classList.add('show');
+  }
+  function activateFeel() {
+    brainFeel.classList.remove('inactive');
+    brainThink.classList.add('inactive');
+    tipFeel.classList.add('show');
+  }
+  function deactivate() {
+    brainThink.classList.remove('inactive');
+    brainFeel.classList.remove('inactive');
+    tipThink.classList.remove('show');
+    tipFeel.classList.remove('show');
+  }
+
+  brainThink.addEventListener('mouseenter', activateThink);
+  brainThink.addEventListener('mouseleave', deactivate);
+  brainFeel.addEventListener('mouseenter',  activateFeel);
+  brainFeel.addEventListener('mouseleave',  deactivate);
+  brainThink.addEventListener('focus', activateThink);
+  brainThink.addEventListener('blur',  deactivate);
+  brainFeel.addEventListener('focus',  activateFeel);
+  brainFeel.addEventListener('blur',   deactivate);
+})();
