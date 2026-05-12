@@ -321,11 +321,98 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  /* Scroll reveal — figures and cluster rows */
+  /* ── Chart initializers — called lazily when figure enters viewport ── */
+  const chartInited = {};
+
+  function initTypeChart() {
+    if (chartInited.typeChart) return;
+    chartInited.typeChart = true;
+    new Chart(document.getElementById('typeChart'), {
+      type: 'bar',
+      data: {
+        labels: ['Decision-making', 'Social advice', 'Personal problems', 'Venting', 'Casual chat', 'Day recap', 'Other'],
+        datasets: [{
+          label: 'Respondents',
+          data: [16, 10, 8, 7, 7, 5, 5],
+          backgroundColor: ['#7F77DD', '#4a8fc0', '#4a8fc0', '#4a8fc0', '#4a8fc0', '#4a8fc0', '#6b7280'],
+          borderRadius: 4,
+          borderSkipped: false
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: { duration: 900, easing: 'easeOutQuart' },
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: { label: ctx => ` ${ctx.raw} out of 23 respondents` } }
+        },
+        scales: {
+          x: {
+            max: 23,
+            ticks: { stepSize: 5, color: '#9ab4cc', font: { family: 'DM Sans', size: 12 } },
+            grid: { color: 'rgba(240,247,255,0.06)' },
+            border: { display: false }
+          },
+          y: {
+            ticks: { color: '#cfe5f7', font: { family: 'DM Sans', size: 13 } },
+            grid: { display: false },
+            border: { display: false }
+          }
+        }
+      }
+    });
+  }
+
+  function initReasonsChart() {
+    if (chartInited.reasonsChart) return;
+    chartInited.reasonsChart = true;
+    new Chart(document.getElementById('reasonsChart'), {
+      type: 'bar',
+      data: {
+        labels: ['Non-judgmental', 'Always available', "Won't burden emotionally", 'Less subject to bias', 'Private / no social risk'],
+        datasets: [{
+          label: 'Respondents',
+          data: [8, 7, 5, 3, 3],
+          backgroundColor: ['#7F77DD', '#4a8fc0', '#4a8fc0', '#4a8fc0', '#4a8fc0'],
+          borderRadius: 4,
+          borderSkipped: false
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: { duration: 900, easing: 'easeOutQuart' },
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: { label: ctx => ` ${ctx.raw} out of 23 respondents` } }
+        },
+        scales: {
+          x: {
+            max: 23,
+            ticks: { stepSize: 5, color: '#9ab4cc', font: { family: 'DM Sans', size: 12 } },
+            grid: { color: 'rgba(240,247,255,0.06)' },
+            border: { display: false }
+          },
+          y: {
+            ticks: { color: '#cfe5f7', font: { family: 'DM Sans', size: 13 } },
+            grid: { display: false },
+            border: { display: false }
+          }
+        }
+      }
+    });
+  }
+
+  /* Scroll reveal — figures and cluster rows; init charts on entry */
   const revealObs = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         entry.target.classList.add('visible');
+        if (entry.target.id === 'fig-types')   initTypeChart();
+        if (entry.target.id === 'fig-reasons') initReasonsChart();
         revealObs.unobserve(entry.target);
       }
     });
@@ -333,9 +420,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.querySelectorAll('.reveal, .cluster-row').forEach(el => revealObs.observe(el));
 
-  /* Prose text — fade in as you reach it, fade out as you scroll past.
-     rootMargin creates a reading window in the middle of the viewport
-     so only ~1-2 paragraphs are visible at once. */
+  /* Prose text — fade in as you reach it, fade out as you scroll past */
   const textObs = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
@@ -349,102 +434,6 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.prose p, .prose .section-hed').forEach(el => {
     el.classList.add('reveal-text');
     textObs.observe(el);
-  });
-
-  /* ── typeChart ─────────────────────────────────────────────── */
-  new Chart(document.getElementById('typeChart'), {
-    type: 'bar',
-    data: {
-      labels: ['Decision-making', 'Social advice', 'Personal problems', 'Venting', 'Casual chat', 'Day recap', 'Other'],
-      datasets: [{
-        label: 'Respondents',
-        data: [16, 10, 8, 7, 7, 5, 5],
-        backgroundColor: [
-          '#7F77DD', '#4a8fc0', '#4a8fc0', '#4a8fc0', '#4a8fc0', '#4a8fc0', '#6b7280'
-        ],
-        borderRadius: 4,
-        borderSkipped: false
-      }]
-    },
-    options: {
-      indexAxis: 'y',
-      responsive: true,
-      maintainAspectRatio: false,
-      animation: { duration: 900, easing: 'easeOutQuart' },
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          callbacks: {
-            label: ctx => ` ${ctx.raw} out of 23 respondents`
-          }
-        }
-      },
-      scales: {
-        x: {
-          max: 23,
-          ticks: { stepSize: 5, color: '#9ab4cc', font: { family: 'DM Sans', size: 12 } },
-          grid: { color: 'rgba(240,247,255,0.06)' },
-          border: { display: false }
-        },
-        y: {
-          ticks: { color: '#cfe5f7', font: { family: 'DM Sans', size: 13 } },
-          grid: { display: false },
-          border: { display: false }
-        }
-      }
-    }
-  });
-
-  /* ── reasonsChart ──────────────────────────────────────────── */
-  new Chart(document.getElementById('reasonsChart'), {
-    type: 'bar',
-    data: {
-      labels: [
-        'Non-judgmental',
-        'Always available',
-        'Won\'t burden emotionally',
-        'Less subject to bias',
-        'Private / no social risk'
-      ],
-      datasets: [{
-        label: 'Respondents',
-        data: [8, 7, 5, 3, 3],
-        backgroundColor: ['#7F77DD', '#4a8fc0', '#4a8fc0', '#4a8fc0', '#4a8fc0'],
-        borderRadius: 4,
-        borderSkipped: false
-      }]
-    },
-    options: {
-      indexAxis: 'y',
-      responsive: true,
-      maintainAspectRatio: false,
-      animation: { duration: 900, easing: 'easeOutQuart' },
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          callbacks: {
-            label: ctx => ` ${ctx.raw} out of 23 respondents`
-          }
-        }
-      },
-      scales: {
-        x: {
-          max: 23,
-          ticks: {
-            stepSize: 5,
-            color: '#9ab4cc',
-            font: { family: 'DM Sans', size: 12 }
-          },
-          grid: { color: 'rgba(240,247,255,0.06)' },
-          border: { display: false }
-        },
-        y: {
-          ticks: { color: '#cfe5f7', font: { family: 'DM Sans', size: 13 } },
-          grid: { display: false },
-          border: { display: false }
-        }
-      }
-    }
   });
 
   /* ── Scale score bars ──────────────────────────────────────── */
