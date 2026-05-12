@@ -58,14 +58,3 @@ Ctrl + C
 - [Chart.js 4.4](https://www.chartjs.org/) — bar charts and doughnuts
 - [DM Serif Display + DM Sans](https://fonts.google.com/) — Google Fonts
 
----
-
-## Visualizations
-
-| Figure | What it shows | Placed after… |
-|---|---|---|
-| JAMA doughnuts | 13.1% / 22.2% of youth using AI for mental health (hover to reveal helpfulness) | "1 in 8 adolescents" paragraph |
-| Interaction types bar | What students use AI for outside academics (n=14) | Survey paragraph |
-| Reasons bar | Why students choose AI over a friend or therapist | "35.7% judgment-free" paragraph |
-| Participant clusters | 7 survey respondents — hover each cluster for their quotes and scores | Between the two article sections |
-| Scale score bars | Average Likert scores across 8 emotional dimensions | Before the closing footer |

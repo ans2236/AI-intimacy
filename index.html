@@ -22,6 +22,85 @@
     </div>
   </header>
 
+  <!-- ── INTERACTIVE MAP ──────────────────────────────────────── -->
+  <section id="map-section">
+    <div class="map-intro">
+      <p class="map-eyebrow">Three Subjects · Three Universities</p>
+      <h2 class="map-title">Who are we talking to?</h2>
+      <p class="map-sub">Hover to learn more. Click to read their conversations.</p>
+    </div>
+    <div class="map-canvas-wrap">
+      <canvas id="map-stars"></canvas>
+      <svg id="map-svg" viewBox="0 0 900 500" preserveAspectRatio="xMidYMid meet">
+        <!-- Grid lines — city-at-night feel -->
+        <g class="map-grid">
+          <line x1="0" y1="100" x2="900" y2="100"/><line x1="0" y1="200" x2="900" y2="200"/>
+          <line x1="0" y1="300" x2="900" y2="300"/><line x1="0" y1="400" x2="900" y2="400"/>
+          <line x1="150" y1="0" x2="150" y2="500"/><line x1="300" y1="0" x2="300" y2="500"/>
+          <line x1="450" y1="0" x2="450" y2="500"/><line x1="600" y1="0" x2="600" y2="500"/>
+          <line x1="750" y1="0" x2="750" y2="500"/>
+          <!-- diagonal connectors -->
+          <line x1="150" y1="200" x2="450" y2="300" class="map-connector"/>
+          <line x1="450" y1="300" x2="720" y2="180" class="map-connector"/>
+          <line x1="150" y1="200" x2="720" y2="180" class="map-connector"/>
+        </g>
+        <!-- Dot: Rena (Columbia, NYC area — left) -->
+        <g class="map-dot-group" data-subject="rena" transform="translate(150,200)">
+          <circle class="dot-ring dot-ring-3" r="38"/>
+          <circle class="dot-ring dot-ring-2" r="24"/>
+          <circle class="dot-ring dot-ring-1" r="14"/>
+          <circle class="dot-core" r="5"/>
+          <text class="dot-label" dy="-20">Rena</text>
+          <text class="dot-sublabel" dy="-8">Columbia · New York</text>
+        </g>
+        <!-- Dot: Nawal (UTM — center) -->
+        <g class="map-dot-group" data-subject="nawal" transform="translate(450,300)">
+          <circle class="dot-ring dot-ring-3" r="38"/>
+          <circle class="dot-ring dot-ring-2" r="24"/>
+          <circle class="dot-ring dot-ring-1" r="14"/>
+          <circle class="dot-core" r="5"/>
+          <text class="dot-label" dy="-20">Nawal</text>
+          <text class="dot-sublabel" dy="-8">UTM · Toronto</text>
+        </g>
+        <!-- Dot: Cici (Columbia — right) -->
+        <g class="map-dot-group" data-subject="cici" transform="translate(720,180)">
+          <circle class="dot-ring dot-ring-3" r="38"/>
+          <circle class="dot-ring dot-ring-2" r="24"/>
+          <circle class="dot-ring dot-ring-1" r="14"/>
+          <circle class="dot-core" r="5"/>
+          <text class="dot-label" dy="-20">Cici</text>
+          <text class="dot-sublabel" dy="-8">Columbia · New York</text>
+        </g>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ── CHAT MODAL ─────────────────────────────────────────────── -->
+  <div id="chat-modal" class="chat-modal" aria-hidden="true">
+    <div class="chat-layout">
+      <!-- Sidebar -->
+      <aside class="chat-sidebar">
+        <button class="chat-back" id="chat-back">← Back</button>
+        <div class="chat-subject-info">
+          <div class="chat-subject-avatar" id="chat-avatar"></div>
+          <div class="chat-subject-name" id="chat-name"></div>
+          <div class="chat-subject-meta" id="chat-meta"></div>
+        </div>
+        <div class="chat-sidebar-note">This conversation is reconstructed from interview transcripts.<br><br>Click each message to send it.</div>
+      </aside>
+      <!-- Chat area -->
+      <div class="chat-main">
+        <div class="chat-header-bar">
+          <span class="chat-model-tag">ChatGPT</span>
+        </div>
+        <div class="chat-messages" id="chat-messages"></div>
+        <div class="chat-input-area" id="chat-input-area">
+          <!-- Prompt chips injected by JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- ── ARTICLE ───────────────────────────────────────────────── -->
   <article class="prose">
 

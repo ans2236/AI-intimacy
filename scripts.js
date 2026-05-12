@@ -1,3 +1,213 @@
+/* ─── CHAT DATA ──────────────────────────────────────────────── */
+const SUBJECTS = {
+  rena: {
+    name: "Rena",
+    initials: "R",
+    meta: "Sophomore · Columbia University\nNew York City",
+    prompts: [
+      {
+        user: "I've been feeling really overwhelmed lately. Being away from family makes everything harder.",
+        ai: "That makes a lot of sense. Being far from the people who know you most — especially in a place as fast-paced and competitive as New York — can create a kind of emotional static that's hard to describe to anyone around you. Everything feels heavier without that baseline anchor. What's been weighing on you most lately?"
+      },
+      {
+        user: "There's someone I keep going back and forth about. I think I'm just overthinking it.",
+        ai: "The fact that you're aware of the overthinking is actually significant — it means part of you already senses that the analysis has outpaced the feeling. When we can't stop turning something over, it's often because we're working up to a conclusion we already know. What does your gut say, underneath all the back and forth?"
+      },
+      {
+        user: "I just wish I had someone to talk to who isn't busy. Everyone is always busy.",
+        ai: "I hear that. There's something quietly exhausting about having things you need to say and no natural opening to say them — especially when the people around you are running on the same packed schedule. You don't always need advice. Sometimes you just need somewhere to put it all down. I'm here."
+      }
+    ]
+  },
+  nawal: {
+    name: "Nawal",
+    initials: "N",
+    meta: "First Year · University of Toronto\nMississauga, Ontario",
+    prompts: [
+      {
+        user: "I've been thinking about whether I want to stay at my university. It feels really isolating here.",
+        ai: "That's a significant thing to sit with, especially in your first year. A campus that feels more academically focused than socially connected can create a kind of low-grade loneliness that's easy to dismiss but hard to ignore. Are you questioning the place, the program, or something deeper — like whether this path feels right at all?"
+      },
+      {
+        user: "I'm scared that if I make the wrong choice I'll end up unsuccessful. By 25 I want to have a stable life.",
+        ai: "That fear is completely understandable — and it's doing something sneaky: it frames every option except 'stay' as failure, which makes it impossible to think clearly. People reroute all the time and still land somewhere meaningful and stable. The question isn't 'will I ruin everything?' It's 'what do I actually need right now to move forward?' What would enough look like, even if it wasn't perfect?"
+      },
+      {
+        user: "I just don't think my friends would understand. They'd have opinions.",
+        ai: "That's one of the things that's different here. I don't have a stake in what you decide. I'm not worried about losing you, or subconsciously steering you toward what would be easiest for me. You can think out loud without managing anyone's reaction in return. What's the version of this decision you're most afraid to say out loud?"
+      }
+    ]
+  },
+  cici: {
+    name: "Cici",
+    initials: "C",
+    meta: "Master's Student · Columbia University\nNew York City (from China)",
+    prompts: [
+      {
+        user: "I need to vent. My friend got way more upset about my situation than I even did.",
+        ai: "That's a quietly exhausting dynamic — you come to someone to process something, and suddenly you're managing their emotional reaction on top of your own. It flips the whole purpose. It sounds like you already know how you feel about what happened. Do you want to walk through it, or do you mostly just need somewhere to put it down?"
+      },
+      {
+        user: "Honestly ChatGPT is easier. Friends are always bringing their own feelings into it.",
+        ai: "There's something real in that. Not because your friends don't care — but because caring comes with its own weight, and sometimes you don't need someone else's feelings added to yours. You just need clarity. The things you're carrying don't always need to be witnessed by someone who loves you. Sometimes they just need to be said."
+      },
+      {
+        user: "I already know what I'm going to do. I just needed to think it through.",
+        ai: "Then you've done the work. The clarity you're describing — where the answer was already there but needed space to surface — that's real. You don't always need advice. Sometimes you just need a place to think without it echoing back louder than it left. You can close this now."
+      }
+    ]
+  }
+};
+
+/* ─── MAP + CHAT INIT ────────────────────────────────────────── */
+(function initMapAndChat() {
+  const modal    = document.getElementById('chat-modal');
+  const backBtn  = document.getElementById('chat-back');
+  const messagesEl = document.getElementById('chat-messages');
+  const inputArea  = document.getElementById('chat-input-area');
+  const avatarEl   = document.getElementById('chat-avatar');
+  const nameEl     = document.getElementById('chat-name');
+  const metaEl     = document.getElementById('chat-meta');
+
+  let currentSubject = null;
+  let promptIndex = 0;
+
+  /* Open modal */
+  function openChat(subjectKey) {
+    const s = SUBJECTS[subjectKey];
+    currentSubject = subjectKey;
+    promptIndex = 0;
+    messagesEl.innerHTML = '';
+    avatarEl.textContent = s.initials;
+    nameEl.textContent   = s.name;
+    metaEl.textContent   = s.meta;
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    renderPrompts(s);
+  }
+
+  /* Close modal */
+  function closeChat() {
+    modal.classList.remove('open');
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    currentSubject = null;
+  }
+
+  /* Render available prompt chips */
+  function renderPrompts(s) {
+    if (promptIndex >= s.prompts.length) {
+      inputArea.innerHTML = '<p class="chat-done-note">End of conversation. Press ← Back to return.</p>';
+      return;
+    }
+    const chip = document.createElement('div');
+    chip.className = 'chat-prompts';
+
+    const label = document.createElement('div');
+    label.className = 'chat-input-label';
+    label.textContent = 'Send a message';
+
+    const btn = document.createElement('button');
+    btn.className = 'prompt-chip';
+    btn.textContent = s.prompts[promptIndex].user;
+    btn.addEventListener('click', () => sendMessage(s, promptIndex));
+
+    chip.appendChild(label);
+    chip.appendChild(btn);
+    inputArea.innerHTML = '';
+    inputArea.appendChild(chip);
+  }
+
+  /* Send a message and show AI response */
+  function sendMessage(s, idx) {
+    const turn = s.prompts[idx];
+
+    /* Disable chips immediately */
+    inputArea.querySelectorAll('.prompt-chip').forEach(c => c.classList.add('sent'));
+
+    /* User bubble */
+    appendMessage('user', s.name, turn.user);
+
+    /* Typing indicator */
+    const typingRow = document.createElement('div');
+    typingRow.className = 'msg-row';
+    typingRow.innerHTML = `
+      <div class="msg-avatar ai-av">AI</div>
+      <div class="msg-body">
+        <div class="msg-sender">ChatGPT</div>
+        <div class="typing-indicator"><span></span><span></span><span></span></div>
+      </div>`;
+    messagesEl.appendChild(typingRow);
+    scrollMessages();
+
+    /* AI response after delay */
+    const delay = 1200 + turn.ai.length * 6;
+    setTimeout(() => {
+      typingRow.remove();
+      appendMessage('ai', 'ChatGPT', turn.ai);
+      promptIndex = idx + 1;
+      renderPrompts(s);
+      scrollMessages();
+    }, Math.min(delay, 4000));
+  }
+
+  function appendMessage(role, sender, text) {
+    const row = document.createElement('div');
+    row.className = `msg-row ${role === 'user' ? 'user-row' : ''}`;
+    row.innerHTML = `
+      <div class="msg-avatar ${role === 'user' ? 'user-av' : 'ai-av'}">${role === 'user' ? SUBJECTS[currentSubject].initials : 'AI'}</div>
+      <div class="msg-body">
+        <div class="msg-sender">${sender}</div>
+        <div class="msg-text">${text}</div>
+      </div>`;
+    messagesEl.appendChild(row);
+  }
+
+  function scrollMessages() {
+    messagesEl.scrollTo({ top: messagesEl.scrollHeight, behavior: 'smooth' });
+  }
+
+  /* Wire map dots */
+  document.querySelectorAll('.map-dot-group').forEach(dot => {
+    dot.addEventListener('click', () => openChat(dot.dataset.subject));
+  });
+
+  /* Back button */
+  backBtn.addEventListener('click', closeChat);
+
+  /* Esc key */
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && modal.classList.contains('open')) closeChat();
+  });
+
+  /* Star field on map canvas */
+  function drawStars() {
+    const wrap = document.querySelector('.map-canvas-wrap');
+    const canvas = document.getElementById('map-stars');
+    if (!wrap || !canvas) return;
+    const w = wrap.offsetWidth;
+    const h = wrap.offsetHeight;
+    canvas.width  = w;
+    canvas.height = h;
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, w, h);
+    for (let i = 0; i < 120; i++) {
+      const x = Math.random() * w;
+      const y = Math.random() * h;
+      const r = Math.random() * 1.2;
+      const alpha = Math.random() * 0.5 + 0.1;
+      ctx.beginPath();
+      ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(180,210,255,${alpha})`;
+      ctx.fill();
+    }
+  }
+
+  window.addEventListener('load', drawStars);
+  window.addEventListener('resize', drawStars);
+})();
+
 /* ─── NAMES ──────────────────────────────────────────────────── */
 const NAMES = [
   "Mara Voss", "Eliot Crane", "Sasha Lund", "Noa Ferris",
