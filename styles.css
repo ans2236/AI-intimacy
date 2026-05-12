@@ -1581,8 +1581,6 @@ body.splash-open { overflow: hidden; }
   color: var(--ice-1);
   line-height: 1.4;
   min-height: 42px;
-  max-height: 72px;
-  overflow: hidden;
   transition: opacity 0.4s;
   text-shadow: 0 0 20px rgba(240,247,255,0.25);
 }

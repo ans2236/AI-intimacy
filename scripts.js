@@ -108,6 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const charDelay = Math.max(4, Math.floor(900 / text.length));
     const iv = setInterval(() => {
       inputField.textContent += text[i++];
+      scrollToBottom();
       if (i >= text.length) {
         clearInterval(iv);
         sendBtn.classList.remove('waiting');
