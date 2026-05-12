@@ -1353,3 +1353,298 @@ body::before {
   .chat-sidebar { display: none; }
   .chat-back { position: fixed; top: 16px; left: 16px; z-index: 10; }
 }
+
+/* ── SPLASH SCREEN ──────────────────────────────────────────────── */
+body.splash-open { overflow: hidden; }
+
+.splash-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  transition: opacity 0.8s var(--ease-out), visibility 0.8s;
+}
+
+.splash-screen.dismissed {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.splash-decor {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.splash-decor::before {
+  content: '';
+  position: absolute;
+  width: 58vw;
+  height: 58vw;
+  top: -22%;
+  left: -16%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(127,119,221,0.18) 0%, transparent 65%);
+}
+
+.splash-decor::after {
+  content: '';
+  position: absolute;
+  width: 38vw;
+  height: 38vw;
+  bottom: -8%;
+  right: -6%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(74,143,192,0.12) 0%, transparent 65%);
+}
+
+.splash-phone {
+  width: 288px;
+  background: #0b1120;
+  border-radius: 38px;
+  border: 1px solid rgba(154,180,204,0.1);
+  box-shadow: 0 32px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(127,119,221,0.06), inset 0 1px 0 rgba(255,255,255,0.04);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.phone-sbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 20px 8px;
+}
+
+.phone-sbar-time {
+  font-family: var(--sans);
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--ice-1);
+  letter-spacing: 0.02em;
+}
+
+.phone-sbar-icons {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.phone-sbar-icons span {
+  display: block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--ink-dim);
+  opacity: 0.45;
+}
+
+.phone-chat-hdr {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 16px 12px;
+  border-bottom: 1px solid rgba(154,180,204,0.07);
+}
+
+.phone-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #7F77DD 0%, #4a8fc0 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--sans);
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: white;
+  letter-spacing: 0.05em;
+  flex-shrink: 0;
+}
+
+.phone-cname {
+  font-family: var(--sans);
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--ice-1);
+  line-height: 1.2;
+}
+
+.phone-cstatus {
+  font-family: var(--sans);
+  font-size: 0.64rem;
+  color: #4ade80;
+  line-height: 1.2;
+}
+
+.phone-msgs {
+  flex: 1;
+  min-height: 168px;
+  padding: 14px 12px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow: hidden;
+}
+
+.splash-msg {
+  max-width: 84%;
+  padding: 9px 12px;
+  border-radius: 16px;
+  font-family: var(--sans);
+  font-size: 0.74rem;
+  line-height: 1.5;
+  opacity: 0;
+  transform: translateY(6px);
+  animation: splashMsgIn 0.3s var(--ease-out) forwards;
+}
+
+.splash-msg-user {
+  background: var(--accent);
+  color: rgba(255,255,255,0.95);
+  align-self: flex-end;
+  border-bottom-right-radius: 4px;
+}
+
+.splash-msg-ai {
+  background: #151f34;
+  color: var(--ink-dim);
+  align-self: flex-start;
+  border-bottom-left-radius: 4px;
+}
+
+.splash-msg-time {
+  font-family: var(--sans);
+  font-size: 0.57rem;
+  color: rgba(154,180,204,0.38);
+  margin-bottom: 4px;
+}
+
+.splash-msg-time.right { text-align: right; }
+
+@keyframes splashMsgIn {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.splash-typing {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 9px 12px;
+  background: #151f34;
+  border-radius: 16px;
+  border-bottom-left-radius: 4px;
+  align-self: flex-start;
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+
+.splash-typing.show { opacity: 1; }
+
+.splash-typing-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--ink-dim);
+  animation: splashTyping 1.1s ease-in-out infinite;
+}
+
+.splash-typing-dot:nth-child(2) { animation-delay: 0.18s; }
+.splash-typing-dot:nth-child(3) { animation-delay: 0.36s; }
+
+@keyframes splashTyping {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30% { transform: translateY(-4px); opacity: 1; }
+}
+
+.phone-inputrow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px 16px;
+  border-top: 1px solid rgba(154,180,204,0.07);
+}
+
+.phone-inputfield {
+  flex: 1;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(154,180,204,0.1);
+  border-radius: 20px;
+  padding: 8px 12px;
+  font-family: var(--sans);
+  font-size: 0.71rem;
+  color: var(--ink-dim);
+  line-height: 1.4;
+  transition: opacity 0.4s;
+}
+
+.phone-inputfield.sent { opacity: 0.22; }
+
+.phone-sendbtn {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: none;
+  background: var(--accent);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  animation: splashSendPulse 1.8s ease-in-out infinite;
+  transition: transform 0.15s, opacity 0.4s;
+}
+
+.phone-sendbtn:hover { transform: scale(1.1); }
+
+.phone-sendbtn.sent {
+  animation: none;
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.phone-sendbtn svg { width: 14px; height: 14px; }
+
+@keyframes splashSendPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(127,119,221,0.65); }
+  50% { box-shadow: 0 0 0 8px rgba(127,119,221,0); }
+}
+
+.splash-arrow {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(154,180,204,0.2);
+  background: transparent;
+  color: var(--ink-dim);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.5s var(--ease-out), transform 0.5s var(--ease-out), border-color 0.2s, color 0.2s;
+  pointer-events: none;
+}
+
+.splash-arrow.show {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.splash-arrow:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.splash-arrow svg { width: 18px; height: 18px; }

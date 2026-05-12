@@ -1,3 +1,60 @@
+/* ─── SPLASH ─────────────────────────────────────────────────── */
+document.addEventListener('DOMContentLoaded', () => {
+  document.body.classList.add('splash-open');
+
+  const splashEl   = document.getElementById('splash');
+  const sendBtn    = document.getElementById('splash-send');
+  const inputField = document.getElementById('splash-inputfield');
+  const msgsEl     = document.getElementById('splash-msgs');
+  const arrowBtn   = document.getElementById('splash-arrow');
+
+  sendBtn.addEventListener('click', () => {
+    sendBtn.classList.add('sent');
+    inputField.classList.add('sent');
+
+    const userMsg = document.createElement('div');
+    userMsg.className = 'splash-msg splash-msg-user';
+    userMsg.textContent = 'I feel so annoyed. Can I talk to you about it?';
+    msgsEl.appendChild(userMsg);
+
+    const userTime = document.createElement('div');
+    userTime.className = 'splash-msg-time right';
+    userTime.textContent = '2:14 am';
+    msgsEl.appendChild(userTime);
+
+    const typing = document.createElement('div');
+    typing.className = 'splash-typing';
+    typing.innerHTML = '<span class="splash-typing-dot"></span><span class="splash-typing-dot"></span><span class="splash-typing-dot"></span>';
+    setTimeout(() => {
+      msgsEl.appendChild(typing);
+      requestAnimationFrame(() => requestAnimationFrame(() => typing.classList.add('show')));
+    }, 380);
+
+    setTimeout(() => {
+      typing.classList.remove('show');
+      setTimeout(() => {
+        typing.remove();
+        const aiMsg = document.createElement('div');
+        aiMsg.className = 'splash-msg splash-msg-ai';
+        aiMsg.textContent = "Of course you can! What's bothering you right now? Work, school, or some little hiccup in life? Feel free to say anything—I'm listening!";
+        msgsEl.appendChild(aiMsg);
+
+        const aiTime = document.createElement('div');
+        aiTime.className = 'splash-msg-time';
+        aiTime.textContent = '2:14 am';
+        msgsEl.appendChild(aiTime);
+
+        setTimeout(() => arrowBtn.classList.add('show'), 520);
+      }, 180);
+    }, 1900);
+  });
+
+  arrowBtn.addEventListener('click', () => {
+    splashEl.classList.add('dismissed');
+    document.body.classList.remove('splash-open');
+  });
+});
+
 /* ─── CHAT DATA ──────────────────────────────────────────────── */
 const SUBJECTS = {
   rena: {
