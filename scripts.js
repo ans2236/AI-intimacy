@@ -43,10 +43,6 @@ document.addEventListener('DOMContentLoaded', () => {
     {
       user: "How do I know what my core needs are?",
       ai: "Core needs are the things that make you feel safe, respected, and authentic. Think back—when did you feel most grounded and understood in past relationships? The needs present in those moments are yours."
-    },
-    {
-      user: "Ok, whatever.",
-      ai: "Take care."
     }
   ];
 
