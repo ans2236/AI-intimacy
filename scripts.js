@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const inputField    = document.getElementById('splash-inputfield');
   const msgsEl        = document.getElementById('splash-msgs');
   const continueArrow = document.getElementById('splash-continue-arrow');
+  const captionEl     = document.getElementById('splash-caption');
   const timeEl        = document.querySelector('.phone-sbar-time');
 
   const now = new Date();
@@ -88,6 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
           setTimeout(() => typeIn(TURNS[turnIndex].user), 300);
         } else {
           setTimeout(() => {
+            captionEl.classList.add('show');
             continueArrow.classList.add('show');
             splashEl.addEventListener('wheel', onScroll, { passive: true });
             splashEl.addEventListener('touchstart', onTouchStart, { passive: true });
