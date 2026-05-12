@@ -13,14 +13,14 @@ const PARTICIPANTS = [
     id: 0,
     interactions: ["recap of your day", "help with decision-making", "miscellaneous conversation"],
     validate: 3, better: 5,
-    feelsDifferent: "Quicker, I feel it’s more ‘objective’ and less subject to bias.",
-    barriers: "We don’t have enough time to talk."
+    feelsDifferent: "Quicker, I feel it's more 'objective' and less subject to bias.",
+    barriers: "We don't have enough time to talk."
   },
   {
     id: 1,
     interactions: ["recap of your day", "help with decision-making", "advice on social situations", "advice on life problems", "venting/a listening ear"],
     validate: 9, better: 8,
-    feelsDifferent: "I can explain the whole situation with all the minute details in a way I can’t in person due to time constraints. AI has allegiance to no one but the database it serves.",
+    feelsDifferent: "I can explain the whole situation with all the minute details in a way I can't in person due to time constraints. AI has allegiance to no one but the database it serves.",
     barriers: "My friends are friends with people who I vent to AI about and also are liable to judge me."
   },
   {
@@ -28,7 +28,7 @@ const PARTICIPANTS = [
     interactions: ["help with decision-making"],
     validate: 1, better: 1,
     feelsDifferent: "I can stop whenever I feel like it.",
-    barriers: "I know it doesn’t care or have actual emotional reactions because it’s literally a bot. If I open up it doesn’t feel like anyone is actually learning about me."
+    barriers: "I know it doesn't care or have actual emotional reactions because it's literally a bot. If I open up it doesn't feel like anyone is actually learning about me."
   },
   {
     id: 3,
@@ -41,15 +41,15 @@ const PARTICIPANTS = [
     id: 4,
     interactions: ["help with decision-making", "advice on social situations", "advice on life problems", "venting/a listening ear"],
     validate: 9, better: 9,
-    feelsDifferent: "More convenient and readily available — I don’t need to organize myself before expressing.",
-    barriers: "You’re not burdening the AI like you would a friend or therapist, and you’re not bringing it down emotionally because it doesn’t have emotions."
+    feelsDifferent: "More convenient and readily available — I don't need to organize myself before expressing.",
+    barriers: "You're not burdening the AI like you would a friend or therapist, and you're not bringing it down emotionally because it doesn't have emotions."
   },
   {
     id: 5,
     interactions: ["advice on life problems"],
     validate: 8, better: 7,
     feelsDifferent: "Use it rarely and only for hyper specific scenarios where I want advice and feel awkward talking to friends. AI is nonjudgmental and quite helpful.",
-    barriers: "I’m less embarrassed to admit things to AI because it’s not a person. It’s also helpful in social situations where I want a completely objective viewpoint."
+    barriers: "I'm less embarrassed to admit things to AI because it's not a person. It's also helpful in social situations where I want a completely objective viewpoint."
   },
   {
     id: 6,
@@ -206,11 +206,11 @@ function buildTooltip(p) {
       <div class="tooltip-divider"></div>
       <div class="tooltip-field">
         <div class="tooltip-field-label">What feels different with AI?</div>
-        <div class="tooltip-field-text">“${p.feelsDifferent}”</div>
+        <div class="tooltip-field-text">"${p.feelsDifferent}"</div>
       </div>
       <div class="tooltip-field">
-        <div class="tooltip-field-label">Barriers AI doesn’t have</div>
-        <div class="tooltip-field-text">“${p.barriers}”</div>
+        <div class="tooltip-field-label">Barriers AI doesn't have</div>
+        <div class="tooltip-field-text">"${p.barriers}"</div>
       </div>
     </div>`;
 }
@@ -237,29 +237,86 @@ function buildLegend() {
     </div>`).join('');
 }
 
+function buildStickFigure(p, index) {
+  const name = shuffledNames[index % shuffledNames.length];
+  const tags = p.interactions.map(i => `<span class="sf-tag">${i}</span>`).join('');
+  const tooltip = `
+    <div class="cluster-tooltip">
+      <div class="tooltip-tags">${tags}</div>
+      <div class="tooltip-divider"></div>
+      <div class="tooltip-scores">
+        ${buildScoreBar('Validates feelings', p.validate)}
+        ${buildScoreBar('Makes feel better', p.better)}
+      </div>
+      <div class="tooltip-divider"></div>
+      <div class="tooltip-field">
+        <div class="tooltip-field-label">What feels different with AI?</div>
+        <div class="tooltip-field-text">"${p.feelsDifferent}"</div>
+      </div>
+      <div class="tooltip-field">
+        <div class="tooltip-field-label">Barriers AI doesn't have</div>
+        <div class="tooltip-field-text">"${p.barriers}"</div>
+      </div>
+    </div>`;
+  return `
+    <div class="stick-figure-item">
+      <div class="stick-figure-wrap" role="button" tabindex="0" aria-label="Hover to see ${name}'s responses">
+        <svg class="stick-svg" viewBox="0 0 40 80" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2">
+          <circle cx="20" cy="11" r="8"/>
+          <line x1="20" y1="19" x2="20" y2="50"/>
+          <line x1="20" y1="30" x2="7"  y2="43"/>
+          <line x1="20" y1="30" x2="33" y2="43"/>
+          <line x1="20" y1="50" x2="10" y2="70"/>
+          <line x1="20" y1="50" x2="30" y2="70"/>
+        </svg>
+        <span class="stick-name">${name}</span>
+        ${tooltip}
+      </div>
+    </div>`;
+}
+
 /* ─── INIT ───────────────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
 
-  /* Legend */
-  document.getElementById('legend-container').innerHTML = buildLegend();
+  /* Legend + Stage (portrait section removed from HTML; guards kept for safety) */
+  const legendContainer = document.getElementById('legend-container');
+  if (legendContainer) legendContainer.innerHTML = buildLegend();
 
-  /* Stage */
   const stage = document.getElementById('stage');
-  PARTICIPANTS.forEach((p, i) => {
-    if (i > 0 && i % 3 === 0) {
-      stage.insertAdjacentHTML('beforeend',
-        `<div class="chapter-divider"><span>· · ·</span></div>`);
-    }
-    stage.insertAdjacentHTML('beforeend', buildCluster(p, i));
-  });
+  if (stage) {
+    PARTICIPANTS.forEach((p, i) => {
+      if (i > 0 && i % 3 === 0) {
+        stage.insertAdjacentHTML('beforeend',
+          `<div class="chapter-divider"><span>· · ·</span></div>`);
+      }
+      stage.insertAdjacentHTML('beforeend', buildCluster(p, i));
+    });
+  }
 
-  /* Mobile tap tooltip */
   document.querySelectorAll('.icon-cluster').forEach(cluster => {
     cluster.addEventListener('click', () => {
       if (window.innerWidth < 900) {
         const isOpen = cluster.classList.contains('tooltip-visible');
         document.querySelectorAll('.icon-cluster').forEach(c => c.classList.remove('tooltip-visible'));
         if (!isOpen) cluster.classList.add('tooltip-visible');
+      }
+    });
+  });
+
+  /* Stick figure portraits */
+  const stickGrid = document.getElementById('stick-grid');
+  if (stickGrid) {
+    PARTICIPANTS.forEach((p, i) => {
+      stickGrid.insertAdjacentHTML('beforeend', buildStickFigure(p, i));
+    });
+  }
+
+  document.querySelectorAll('.stick-figure-wrap').forEach(wrap => {
+    wrap.addEventListener('click', () => {
+      if (window.innerWidth < 900) {
+        const isOpen = wrap.classList.contains('tooltip-visible');
+        document.querySelectorAll('.stick-figure-wrap').forEach(w => w.classList.remove('tooltip-visible'));
+        if (!isOpen) wrap.classList.add('tooltip-visible');
       }
     });
   });
@@ -301,9 +358,9 @@ document.addEventListener('DOMContentLoaded', () => {
       labels: ['Decision-making', 'Social advice', 'Personal problems', 'Venting', 'Casual chat', 'Day recap', 'Other'],
       datasets: [{
         label: 'Respondents',
-        data: [10, 6, 5, 4, 4, 3, 3],
+        data: [16, 10, 8, 7, 7, 5, 5],
         backgroundColor: [
-          '#7F77DD', '#5DCAA5', '#5DCAA5', '#EF9F27', '#378ADD', '#D4537E', '#888780'
+          '#7F77DD', '#4a8fc0', '#4a8fc0', '#4a8fc0', '#4a8fc0', '#4a8fc0', '#6b7280'
         ],
         borderRadius: 4,
         borderSkipped: false
@@ -318,14 +375,14 @@ document.addEventListener('DOMContentLoaded', () => {
         legend: { display: false },
         tooltip: {
           callbacks: {
-            label: ctx => ` ${ctx.raw} respondents (${((ctx.raw / 14) * 100).toFixed(1)}%)`
+            label: ctx => ` ${ctx.raw} out of 23 respondents`
           }
         }
       },
       scales: {
         x: {
-          max: 14,
-          ticks: { stepSize: 2, color: '#9ab4cc', font: { family: 'DM Sans', size: 12 } },
+          max: 23,
+          ticks: { stepSize: 5, color: '#9ab4cc', font: { family: 'DM Sans', size: 12 } },
           grid: { color: 'rgba(240,247,255,0.06)' },
           border: { display: false }
         },
@@ -343,16 +400,16 @@ document.addEventListener('DOMContentLoaded', () => {
     type: 'bar',
     data: {
       labels: [
-        'Non-judgmental †',
-        'Always available †',
-        'Won’t burden emotionally',
+        'Non-judgmental',
+        'Always available',
+        'Won\'t burden emotionally',
         'Less subject to bias',
         'Private / no social risk'
       ],
       datasets: [{
-        label: '% of respondents',
-        data: [35.7, 28.6, 21.4, 14.3, 14.3],
-        backgroundColor: ['#7F77DD', '#5DCAA5', '#AFA9EC', '#EF9F27', '#D4537E'],
+        label: 'Respondents',
+        data: [8, 7, 5, 3, 3],
+        backgroundColor: ['#7F77DD', '#4a8fc0', '#4a8fc0', '#4a8fc0', '#4a8fc0'],
         borderRadius: 4,
         borderSkipped: false
       }]
@@ -366,15 +423,15 @@ document.addEventListener('DOMContentLoaded', () => {
         legend: { display: false },
         tooltip: {
           callbacks: {
-            label: ctx => ` ${ctx.raw}% of respondents`
+            label: ctx => ` ${ctx.raw} out of 23 respondents`
           }
         }
       },
       scales: {
         x: {
-          max: 50,
+          max: 23,
           ticks: {
-            callback: v => v + '%',
+            stepSize: 5,
             color: '#9ab4cc',
             font: { family: 'DM Sans', size: 12 }
           },
@@ -390,68 +447,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  /* ── JAMA doughnuts ────────────────────────────────────────── */
-  const pewOpts = {
-    type: 'doughnut',
-    options: {
-      responsive: true,
-      maintainAspectRatio: true,
-      cutout: '62%',
-      animation: { duration: 300 },
-      plugins: { legend: { display: false }, tooltip: { enabled: false } }
-    }
-  };
-
-  const pd1def = { labels: ['Used AI', 'Did not'], datasets: [{ data: [13.1, 86.9], backgroundColor: ['#7F77DD', 'rgba(240,247,255,0.08)'], borderWidth: 0 }] };
-  const pd1exp = { labels: ['Helpful', 'Not helpful'], datasets: [{ data: [92.7, 7.3], backgroundColor: ['#7F77DD', '#D4537E'], borderWidth: 0 }] };
-  const pd2def = { labels: ['Used AI', 'Did not'], datasets: [{ data: [22.2, 77.8], backgroundColor: ['#5DCAA5', 'rgba(240,247,255,0.08)'], borderWidth: 0 }] };
-  const pd2exp = { labels: ['Helpful', 'Not helpful'], datasets: [{ data: [92.7, 7.3], backgroundColor: ['#5DCAA5', '#D4537E'], borderWidth: 0 }] };
-
-  const pl1def = [{ c: '#7F77DD', label: 'Used AI for mental health', val: '13.1%' }, { c: 'rgba(240,247,255,0.15)', label: 'Did not', val: '86.9%' }];
-  const pl1exp = [{ c: '#7F77DD', label: 'Found it helpful', val: '92.7%' }, { c: '#D4537E', label: 'Not helpful', val: '7.3%' }];
-  const pl2def = [{ c: '#5DCAA5', label: 'Used AI for mental health', val: '22.2%' }, { c: 'rgba(240,247,255,0.15)', label: 'Did not', val: '77.8%' }];
-  const pl2exp = [{ c: '#5DCAA5', label: 'Found it helpful', val: '92.7%' }, { c: '#D4537E', label: 'Not helpful', val: '7.3%' }];
-
-  function buildJamaLeg(id, rows) {
-    document.getElementById(id).innerHTML = rows.map(r =>
-      `<div class="jama-leg-row"><span class="jama-leg-dot" style="background:${r.c};"></span><span class="jama-leg-text">${r.label}: <strong>${r.val}</strong></span></div>`
-    ).join('');
-  }
-
-  const pc1 = new Chart(document.getElementById('pie1'), { ...pewOpts, data: JSON.parse(JSON.stringify(pd1def)) });
-  const pc2 = new Chart(document.getElementById('pie2'), { ...pewOpts, data: JSON.parse(JSON.stringify(pd2def)) });
-  buildJamaLeg('leg1', pl1def);
-  buildJamaLeg('leg2', pl2def);
-
-  function attachJamaHover(wrapId, chart, dDef, dExp, lDef, lExp, legId) {
-    const wrap = document.getElementById(wrapId);
-    wrap.addEventListener('mouseenter', () => {
-      wrap.classList.add('hov');
-      chart.data = JSON.parse(JSON.stringify(dExp));
-      chart.update();
-      buildJamaLeg(legId, lExp);
-    });
-    wrap.addEventListener('mouseleave', () => {
-      wrap.classList.remove('hov');
-      chart.data = JSON.parse(JSON.stringify(dDef));
-      chart.update();
-      buildJamaLeg(legId, lDef);
-    });
-  }
-
-  attachJamaHover('wrap1', pc1, pd1def, pd1exp, pl1def, pl1exp, 'leg1');
-  attachJamaHover('wrap2', pc2, pd2def, pd2exp, pl2def, pl2exp, 'leg2');
-
   /* ── Scale score bars ──────────────────────────────────────── */
   const scaleScores = [
-    { label: "AI validates feelings",       val: 5.6, color: '#5DCAA5' },
-    { label: "AI offers advice",            val: 4.9, color: '#7F77DD' },
-    { label: "Advice: feel heard",          val: 3.0, color: '#AFA9EC' },
-    { label: "Advice: emotional feeling",   val: 2.7, color: '#EF9F27' },
-    { label: "AI remembers past convos",    val: 3.8, color: '#888780' },
-    { label: "AI mirrors your speech",      val: 4.5, color: '#D4537E' },
-    { label: "Likely to continue using AI", val: 5.3, color: '#5DCAA5' },
-    { label: "AI makes you feel better",    val: 4.7, color: '#378ADD' }
+    { label: "Likely to continue using AI",      val: 5.3, color: '#5DCAA5' },
+    { label: "Validates feelings / uplifts mood", val: 5.2, color: '#7F77DD' },
+    { label: "AI offers useful advice",           val: 4.9, color: '#4a8fc0' },
+    { label: "AI mirrors your speech",            val: 4.5, color: '#D4537E' },
+    { label: "AI remembers past conversations",   val: 3.8, color: '#888780' },
+    { label: "Feels emotionally heard",           val: 2.9, color: '#EF9F27' }
   ];
 
   const scaleContainer = document.getElementById('scaleRows');
