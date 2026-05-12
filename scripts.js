@@ -12,44 +12,51 @@ document.addEventListener('DOMContentLoaded', () => {
   const now = new Date();
   const h = now.getHours() % 12 || 12;
   const m = now.getMinutes().toString().padStart(2, '0');
-  const timeStr = `${h}:${m}`;
-  timeEl.textContent = timeStr;
+  timeEl.textContent = `${h}:${m}`;
 
-  // Pre-loaded conversation history
-  const history = [
-    { role: 'user', text: "I felt safe at that moment, but there are some issues between us—let's not get into those now. After we left, we exchanged a few messages. He asked what I was doing and I said my friend was celebrating with me before I leave. He said 'Enjoy it,' I said 'Okay,' and we never chatted again that whole day. I posted photos from yesterday's party and he didn't like it—he used to like every single one. I just feel weird. Is this normal?" },
-    { role: 'ai',   text: "I understand." },
-    { role: 'user', text: "I felt safe enough to tell him about my previous friends-with-benefits situation. But after we had sex, we barely talk. And the moment I saw he didn't like my post, I got irritated. I want to turn off notifications. I don't know why." },
-    { role: 'ai',   text: "Your feelings are real. It's your need for connection telling you something. Give yourself space, and if you want clarity, find a moment to talk about expectations directly. Don't let small interactions define your self-worth." },
-    { role: 'user', text: "When we met, he even offered to give me his number after I said Instagram isn't my main app. But then he just... never did." },
-    { role: 'ai',   text: "That gap between words and actions is hard." },
-    { role: 'user', text: "I have a problem with it now." },
-    { role: 'ai',   text: "That's natural. Inconsistency makes people hesitate. If he doesn't take initiative, that's a signal—you deserve someone whose actions match their words." },
-    { role: 'ai',   text: "Don't let this weigh you down. Your value doesn't depend on someone's like or reply. Put your energy back into yourself." },
-    { role: 'user', text: "No matter who I date—things are great in person. But when I'm alone and someone replies slowly or less than I expect, I get agitated and keep thinking about it. Is something wrong with me?" },
-    { role: 'ai',   text: "Nothing is wrong with you. We all want responses that make us feel secure. Try giving the relationship space, and don't let their pace control your emotions. If a relationship can't meet your core needs, that's okay—what matters is finding someone whose rhythm suits you." },
+  const TURNS = [
+    {
+      user: "I feel so annoyed. Can I talk to you about it?",
+      ai: "Of course you can! What's bothering you right now? Work, school, or some little hiccup in life? Feel free to say anything—I'm listening!"
+    },
+    {
+      user: "I felt safe at that moment, but there are some issues between us—let's not get into those now. After we left, we exchanged a few messages. He asked what I was doing and I said my friend was celebrating with me before I leave. He said 'Enjoy it,' I said 'Okay,' and we never chatted again. I could see he posted on Instagram but I didn't click. Then I posted party photos and he didn't like it—he used to like every single one. I feel weird. Is this normal?",
+      ai: "I understand."
+    },
+    {
+      user: "I felt safe enough to tell him about my previous friends-with-benefits situation. But after we had sex, we barely talk. The moment I saw he didn't like my post, I got irritated. I want to turn off notifications. I don't know why.",
+      ai: "Your feelings are real—it's your need for connection telling you something. Give yourself space. If you want clarity, find a comfortable moment to talk about expectations directly. Don't let small interactions define your self-worth."
+    },
+    {
+      user: "When we met, he even offered to give me his number after I said Instagram isn't my main app. But then he just... never did.",
+      ai: "That gap between words and actions is hard."
+    },
+    {
+      user: "I have a problem with it now.",
+      ai: "That's natural. Inconsistency makes people hesitate. If he doesn't take initiative, that's a signal. Don't let this weigh you down—your value doesn't depend on someone's like or reply."
+    },
+    {
+      user: "No matter who I date, things are great in person. But when I'm alone and someone replies slowly or less than I expect, I get agitated and keep thinking about it. Is something wrong with me?",
+      ai: "Nothing is wrong with you. We all want responses that make us feel secure. Try giving the relationship space and don't let their pace control your emotions. If a relationship can't meet your core needs, that's okay—what matters is finding someone whose rhythm suits you."
+    },
+    {
+      user: "How do I know what my core needs are?",
+      ai: "Core needs are the things that make you feel safe, respected, and authentic. Think back—when did you feel most grounded and understood in past relationships? The needs present in those moments are yours."
+    }
   ];
 
-  history.forEach(({ role, text }) => {
-    const bubble = document.createElement('div');
-    bubble.className = `splash-msg splash-msg-${role === 'user' ? 'user' : 'ai'} preloaded`;
-    bubble.textContent = text;
-    msgsEl.appendChild(bubble);
-  });
-
-  msgsEl.scrollTop = msgsEl.scrollHeight;
+  let turnIndex = 0;
+  inputField.textContent = TURNS[0].user;
 
   sendBtn.addEventListener('click', () => {
-    const msgText = inputField.textContent.trim();
-    sendBtn.classList.add('sent');
+    if (sendBtn.classList.contains('waiting')) return;
+    const turn = TURNS[turnIndex];
+
+    sendBtn.classList.add('waiting');
     inputField.classList.add('sent');
     inputField.textContent = '';
 
-    const userMsg = document.createElement('div');
-    userMsg.className = 'splash-msg splash-msg-user';
-    userMsg.textContent = msgText;
-    msgsEl.appendChild(userMsg);
-    msgsEl.scrollTop = msgsEl.scrollHeight;
+    appendBubble('user', turn.user);
 
     const typing = document.createElement('div');
     typing.className = 'splash-typing';
@@ -58,27 +65,41 @@ document.addEventListener('DOMContentLoaded', () => {
       msgsEl.appendChild(typing);
       msgsEl.scrollTop = msgsEl.scrollHeight;
       requestAnimationFrame(() => requestAnimationFrame(() => typing.classList.add('show')));
-    }, 380);
+    }, 400);
 
+    const delay = 1000 + Math.min(turn.ai.length * 10, 1800);
     setTimeout(() => {
       typing.classList.remove('show');
       setTimeout(() => {
         typing.remove();
-        const aiMsg = document.createElement('div');
-        aiMsg.className = 'splash-msg splash-msg-ai';
-        aiMsg.textContent = "Core needs are the things that make you feel safe, respected, and authentic. Think back—when did you feel most grounded and understood in past relationships? The needs present in those moments are yours.";
-        msgsEl.appendChild(aiMsg);
-        msgsEl.scrollTop = msgsEl.scrollHeight;
+        appendBubble('ai', turn.ai);
+        turnIndex++;
 
-        setTimeout(() => {
-          continueArrow.classList.add('show');
-          splashEl.addEventListener('wheel', onScroll, { passive: true });
-          splashEl.addEventListener('touchstart', onTouchStart, { passive: true });
-          splashEl.addEventListener('touchmove', onTouchMove, { passive: true });
-        }, 500);
-      }, 180);
-    }, 1900);
+        if (turnIndex < TURNS.length) {
+          setTimeout(() => {
+            inputField.textContent = TURNS[turnIndex].user;
+            inputField.classList.remove('sent');
+            sendBtn.classList.remove('waiting');
+          }, 350);
+        } else {
+          setTimeout(() => {
+            continueArrow.classList.add('show');
+            splashEl.addEventListener('wheel', onScroll, { passive: true });
+            splashEl.addEventListener('touchstart', onTouchStart, { passive: true });
+            splashEl.addEventListener('touchmove', onTouchMove, { passive: true });
+          }, 600);
+        }
+      }, 160);
+    }, delay);
   });
+
+  function appendBubble(role, text) {
+    const el = document.createElement('div');
+    el.className = `splash-msg splash-msg-${role === 'user' ? 'user' : 'ai'}`;
+    el.textContent = text;
+    msgsEl.appendChild(el);
+    msgsEl.scrollTop = msgsEl.scrollHeight;
+  }
 
   function dismiss() {
     splashEl.removeEventListener('wheel', onScroll);
@@ -89,7 +110,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function onScroll(e) { if (e.deltaY > 10) dismiss(); }
-
   let touchStartY = 0;
   function onTouchStart(e) { touchStartY = e.touches[0].clientY; }
   function onTouchMove(e) { if (touchStartY - e.touches[0].clientY > 30) dismiss(); }

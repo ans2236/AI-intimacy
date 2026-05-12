@@ -1605,9 +1605,10 @@ body.splash-open { overflow: hidden; }
 
 .phone-sendbtn:hover { transform: scale(1.1); }
 
-.phone-sendbtn.sent {
+.phone-sendbtn.sent,
+.phone-sendbtn.waiting {
   animation: none;
-  opacity: 0.2;
+  opacity: 0.25;
   pointer-events: none;
 }
 
