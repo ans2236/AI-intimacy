@@ -2,14 +2,12 @@
 document.addEventListener('DOMContentLoaded', () => {
   document.body.classList.add('splash-open');
 
-  const splashEl   = document.getElementById('splash');
-  const sendBtn    = document.getElementById('splash-send');
-  const inputField = document.getElementById('splash-inputfield');
-  const msgsEl     = document.getElementById('splash-msgs');
-  const dotsEl     = document.getElementById('splash-dots');
-  const exitMenu   = document.getElementById('phone-exit-menu');
-  const exitBtn    = document.getElementById('phone-exit-btn');
-  const timeEl     = document.querySelector('.phone-sbar-time');
+  const splashEl     = document.getElementById('splash');
+  const sendBtn      = document.getElementById('splash-send');
+  const inputField   = document.getElementById('splash-inputfield');
+  const msgsEl       = document.getElementById('splash-msgs');
+  const continueArrow = document.getElementById('splash-continue-arrow');
+  const timeEl       = document.querySelector('.phone-sbar-time');
 
   // Live time
   const now = new Date();
@@ -55,17 +53,12 @@ document.addEventListener('DOMContentLoaded', () => {
         aiTime.textContent = timeStr;
         msgsEl.appendChild(aiTime);
 
-        setTimeout(() => dotsEl.classList.add('glowing'), 500);
+        setTimeout(() => continueArrow.classList.add('show'), 500);
       }, 180);
     }, 1900);
   });
 
-  dotsEl.addEventListener('click', () => {
-    if (!dotsEl.classList.contains('glowing')) return;
-    exitMenu.classList.add('show');
-  });
-
-  exitBtn.addEventListener('click', () => {
+  continueArrow.addEventListener('click', () => {
     splashEl.classList.add('dismissed');
     document.body.classList.remove('splash-open');
   });
