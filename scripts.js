@@ -42,11 +42,17 @@ document.addEventListener('DOMContentLoaded', () => {
     {
       user: "How do I know what my core needs are?",
       ai: "Core needs are the things that make you feel safe, respected, and authentic. Think back—when did you feel most grounded and understood in past relationships? The needs present in those moments are yours."
+    },
+    {
+      user: "Ok, whatever.",
+      ai: "Take care."
     }
   ];
 
   let turnIndex = 0;
-  inputField.textContent = TURNS[0].user;
+
+  // Type the first message in after a brief pause
+  setTimeout(() => typeIn(TURNS[0].user), 300);
 
   sendBtn.addEventListener('click', () => {
     if (sendBtn.classList.contains('waiting')) return;
@@ -58,16 +64,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     appendBubble('user', turn.user);
 
+    // Snappy typing indicator
     const typing = document.createElement('div');
     typing.className = 'splash-typing';
     typing.innerHTML = '<span class="splash-typing-dot"></span><span class="splash-typing-dot"></span><span class="splash-typing-dot"></span>';
     setTimeout(() => {
       msgsEl.appendChild(typing);
-      msgsEl.scrollTop = msgsEl.scrollHeight;
+      scrollToBottom();
       requestAnimationFrame(() => requestAnimationFrame(() => typing.classList.add('show')));
-    }, 400);
+    }, 120);
 
-    const delay = 1000 + Math.min(turn.ai.length * 10, 1800);
+    // AI response delay scales with length but stays snappy
+    const aiDelay = 380 + Math.min(turn.ai.length * 2, 420);
     setTimeout(() => {
       typing.classList.remove('show');
       setTimeout(() => {
@@ -76,11 +84,8 @@ document.addEventListener('DOMContentLoaded', () => {
         turnIndex++;
 
         if (turnIndex < TURNS.length) {
-          setTimeout(() => {
-            inputField.textContent = TURNS[turnIndex].user;
-            inputField.classList.remove('sent');
-            sendBtn.classList.remove('waiting');
-          }, 350);
+          // Typewriter for next user message
+          setTimeout(() => typeIn(TURNS[turnIndex].user), 300);
         } else {
           setTimeout(() => {
             continueArrow.classList.add('show');
@@ -89,16 +94,35 @@ document.addEventListener('DOMContentLoaded', () => {
             splashEl.addEventListener('touchmove', onTouchMove, { passive: true });
           }, 600);
         }
-      }, 160);
-    }, delay);
+      }, 120);
+    }, aiDelay);
   });
+
+  function typeIn(text) {
+    inputField.classList.remove('sent');
+    inputField.textContent = '';
+    sendBtn.classList.add('waiting');
+    let i = 0;
+    const charDelay = Math.max(4, Math.floor(900 / text.length));
+    const iv = setInterval(() => {
+      inputField.textContent += text[i++];
+      if (i >= text.length) {
+        clearInterval(iv);
+        sendBtn.classList.remove('waiting');
+      }
+    }, charDelay);
+  }
 
   function appendBubble(role, text) {
     const el = document.createElement('div');
     el.className = `splash-msg splash-msg-${role === 'user' ? 'user' : 'ai'}`;
     el.textContent = text;
     msgsEl.appendChild(el);
-    msgsEl.scrollTop = msgsEl.scrollHeight;
+    scrollToBottom();
+  }
+
+  function scrollToBottom() {
+    setTimeout(() => { msgsEl.scrollTop = msgsEl.scrollHeight; }, 20);
   }
 
   function dismiss() {
